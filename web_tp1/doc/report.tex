@@ -1,0 +1,87 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[scaled]{helvet}
+\renewcommand\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{authblk}
+\usepackage{enumitem}
+\usepackage{hyperref} 
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=blue
+}
+
+\begin{document}
+
+\title{Petits comptes entre amis} 
+\author{Steven Liatti} 
+\affil{\small Développement et services web - Prof. Stéphane Malandain} 
+\affil{\small Hepia ITI 3\up{ème} année} 
+\maketitle
+
+\section{Introduction}
+\subsection{Description}
+Le but de ce mini-projet est de réaliser un site en php permettant à des amis de noter et
+partager les dépenses effectuées par et pour le groupe au cours de vacances
+communes. Lorsque l’une des personnes fait des courses, par exemple, elle l’enregistre.
+Chacun enregistre les dépenses qui concernent le groupe. Ainsi, à la fin du séjour (ou à
+tout moment) on peut savoir qui a payé quoi et surtout ce que chacun doit aux autres
+personnes du groupe d’amis.
+
+\subsection{Technologies utilisées}
+\begin{itemize}
+	\item Back-end :
+	\begin{itemize}
+		\item Base de données :
+		\begin{itemize}
+			\item \href{https://www.mysql.com/}{MySQ 5.7}, avec
+			\item \href{https://www.mysql.com/products/workbench/}{MySQL Workbench 6.3} (pour la création du schéma)
+		\end{itemize}
+		\item \href{https://httpd.apache.org/}{Apache 2.4}, serveur HTTP
+		\item \href{http://php.net/}{PHP 7.0}, avec
+		\item \href{https://silex.symfony.com/}{Silex}, micro framework PHP basé entre autres sur \href{https://symfony.com/}{Symfony}
+	\end{itemize}
+	\item Front-end :
+	\begin{itemize}
+		\item \href{https://jquery.org/}{jQuery}
+		\item \href{http://getbootstrap.com/}{Bootstrap V4} pour le design en CSS
+	\end{itemize}
+\end{itemize}
+
+
+\section{Back-end}
+\subsection{Base de données}
+Les technologies imposées pour la base de données de ce travail pratique sont SQLite et MySQL. J'ai choisi d'utiliser 
+MySQL, car je suis familier avec. J'ai profité de cette occasion pour découvrir et utiliser Workbench, un programme 
+permettant de modéliser les tables et relations d'une base de données de manière graphique. Une fois le model terminé, 
+Workbench offre la possibilité de l'exporter en instructions SQL (création de tables et contraintes).
+\bigbreak
+Mon schéma est constitué des tables suivantes :
+
+\subsection{Silex}
+Je profite également de ce TP pour appréhender Silex, un micro framework PHP dérivé de Symfony (que j'ai eu l'occasion 
+de tester), beaucoup plus léger que son grand frère mais tout de même robuste et modulaire. Il bénéficie d'un 
+grand nombre de modules à ajouter, en vrac : système de templates, connexion à la base de données, logs, etc.
+
+
+%\subsection{Architecture MVC}
+
+
+
+\section{Front-end}
+
+
+
+\section{Conclusion}
+\subsection{État actuel du projet}
+
+\subsection{Propositions d'améliorations}
+
+
+\end{document}
