@@ -10,14 +10,12 @@ insert into pcea.users (username, password) values ("max", "pass");
 insert into pcea.users (username, password) values ("jean", "pass");
 insert into pcea.users (username, password) values ("fred", "pass");
 
-insert into pcea.groups (name) values ("copains");
+insert into pcea.events (name, currency) values ("Weekend montagne", "CHF");
 
-insert into pcea.users_has_groups (users_id, groups_id) values (1, 1);
-insert into pcea.users_has_groups (users_id, groups_id) values (2, 1);
-insert into pcea.users_has_groups (users_id, groups_id) values (3, 1);
-insert into pcea.users_has_groups (users_id, groups_id) values (4, 1);
-
-insert into pcea.events (name, groups_id, currency) values ("Weekend montagne", 1, "CHF");
+insert into pcea.users_has_events (users_id, events_id) values (1, 1);
+insert into pcea.users_has_events (users_id, events_id) values (2, 1);
+insert into pcea.users_has_events (users_id, events_id) values (3, 1);
+insert into pcea.users_has_events (users_id, events_id) values (4, 1);
 
 insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Essence", 50.5, NOW(), 1, 1);
 insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Location chalet", 300, NOW(), 2, 1);
