@@ -2,18 +2,11 @@
 
 use Symfony\Component\HttpFoundation\Request;
 
-function genRandStr($length = 23) {
-	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+@#*%&/()=?${}[]-_.:,;<>';
-	$randomString = '';
-	for ($i = 0; $i < $length; $i++) {
-		$randomString .= $characters[rand(0, strlen($characters) - 1)];
-	}
-	return $randomString;
-}
+const saltLength = 23;
 
 // For developpement only, generate and show hash and salt
 $app->get('/hashpwd/{pass}', function($pass) use ($app) {
-	$salt = genRandStr();
+	$salt = substr(md5(time()), 0, saltLength);
 	$hash = $app['security.encoder.bcrypt']->encodePassword($pass, $salt);
 	return $hash . "<br><br>" . $salt;
 });
