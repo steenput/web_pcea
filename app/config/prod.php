@@ -8,5 +8,5 @@ $app['db.options'] = array(
 	'port'     => '3306',
 	'dbname'   => 'pcea',
 	'user'     => 'root',
-	'password' => 'mysql',
+	'password' => '',
 );
