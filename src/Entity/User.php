@@ -11,14 +11,6 @@ class User implements UserInterface {
 	private $salt;
 	private $role;
 
-	public function __construct($id, $username, $password, $salt, $role) {
-		$this->id = $id;
-		$this->username = $username;
-		$this->password = $password;
-		$this->salt = $salt;
-		$this->role = $role;
-	}
-
 	public function getId() {
 		return $this->id;
 	}

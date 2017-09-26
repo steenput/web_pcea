@@ -10,6 +10,31 @@ use Pcea\Entity\User;
 
 class UserDAO extends DAO implements UserProviderInterface {
 	/**
+	 * Saves a user into the database.
+	 *
+	 * @param \MicroCMS\Domain\User $user The user to save
+	 */
+	public function save(User $user) {
+		$userData = array(
+			'username' => $user->getUsername(),
+			'password' => $user->getPassword(),
+			'salt' => $user->getSalt(),
+			'role' => 'ROLE_USER'
+			);
+
+		if ($user->getId()) {
+			// The user has already been saved : update it
+			$this->getDb()->update('users', $userData, array('id' => $user->getId()));
+		} else {
+			// The user has never been saved : insert it
+			$this->getDb()->insert('users', $userData);
+			// Get the id of the newly created user and set it on the entity.
+			$id = $this->getDb()->lastInsertId();
+			$user->setId($id);
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function loadUserByUsername($username) {
@@ -47,6 +72,12 @@ class UserDAO extends DAO implements UserProviderInterface {
 	 * @return \Pcea\Entity\User
 	 */
 	protected function buildEntityObject(array $row) {
-		return new User($row['id'], $row['username'], $row['password'], $row['salt'], $row['role']);
+		$user = new User();
+		$user->setId($row['id']);
+		$user->setUsername($row['username']);
+		$user->setPassword($row['password']);
+		$user->setSalt($row['salt']);
+		$user->setRole($row['role']);
+		return $user;
 	}
 }
