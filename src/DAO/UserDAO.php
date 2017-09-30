@@ -10,11 +10,11 @@ use Pcea\Entity\User;
 
 class UserDAO extends DAO implements UserProviderInterface {
 	/**
-	 * Saves a user into the database.
+	 * Create an user into the database.
 	 *
-	 * @param \MicroCMS\Domain\User $user The user to save
+	 * @param \Pcea\Entity\User $user The user to create
 	 */
-	public function save(User $user) {
+	public function create(User $user) {
 		$userData = array(
 			'username' => $user->getUsername(),
 			'password' => $user->getPassword(),
@@ -22,16 +22,39 @@ class UserDAO extends DAO implements UserProviderInterface {
 			'role' => 'ROLE_USER'
 			);
 
-		if ($user->getId()) {
-			// The user has already been saved : update it
-			$this->getDb()->update('users', $userData, array('id' => $user->getId()));
-		} else {
-			// The user has never been saved : insert it
-			$this->getDb()->insert('users', $userData);
-			// Get the id of the newly created user and set it on the entity.
-			$id = $this->getDb()->lastInsertId();
-			$user->setId($id);
-		}
+		$this->getDb()->insert('users', $userData);
+		$id = $this->getDb()->lastInsertId();
+		$user->setId($id);
+
+		return $user;
+	}
+
+	public function read($id) {
+		$sql = "select * from users where id=?";
+		$row = $this->getDb()->fetchAssoc($sql, array($id));
+
+		if ($row)
+			return $this->buildEntityObject($row);
+		else
+			throw new UsernameNotFoundException(sprintf('User with id "%s" not found.', $id));
+	}
+
+	/**
+	 * Update an user into the database.
+	 *
+	 * @param \Pcea\Entity\User $user The user to update
+	 */
+	public function update(User $user) {
+		$userData = array(
+			'username' => $user->getUsername(),
+			'password' => $user->getPassword(),
+			'salt' => $user->getSalt(),
+			'role' => $user->getRole()
+			);
+
+		$this->getDb()->update('users', $userData, array('id' => $user->getId()));
+
+		return $user;
 	}
 
 	/**

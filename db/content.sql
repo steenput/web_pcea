@@ -11,22 +11,30 @@ insert into pcea.users (username, password, salt, role) values ("jean", '$2y$13$
 insert into pcea.users (username, password, salt, role) values ("fred", '$2y$13$F9v8pl5u5WMrCorP9MLyJeyIsOLj.0/xqKd/hqa5440kyeB7FQ8te', 'YcM=A$nsYzkyeDVjEUa7W9K', 'ROLE_USER');
 
 insert into pcea.events (name, currency) values ("Weekend montagne", "CHF");
+insert into pcea.events (name, currency) values ("Restaurant", "CHF");
+insert into pcea.events (name, currency) values ("Weekend à la mer", "CHF");
 
 insert into pcea.users_has_events (users_id, events_id) values (1, 1);
 insert into pcea.users_has_events (users_id, events_id) values (2, 1);
 insert into pcea.users_has_events (users_id, events_id) values (3, 1);
 insert into pcea.users_has_events (users_id, events_id) values (4, 1);
 
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Essence", 50.5, NOW(), 1, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Location chalet", 300, NOW(), 2, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Bouffe", 75, NOW(), 3, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Télécabine", 60, NOW(), 4, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Bières au sommet", 42, NOW(), 1, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Entrées téléscope", 30, NOW(), 3, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Visite des grottes", 20, NOW(), 3, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("VTT", 27, NOW(), 4, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Aquaparc", 150, NOW(), 4, 1);
-insert into pcea.spents (name, amount, insert_date, buyer, events_id) values ("Fondue", 80, NOW(), 2, 1);
+insert into pcea.users_has_events (users_id, events_id) values (1, 2);
+insert into pcea.users_has_events (users_id, events_id) values (2, 2);
+
+insert into pcea.users_has_events (users_id, events_id) values (3, 3);
+insert into pcea.users_has_events (users_id, events_id) values (4, 3);
+
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Essence", 50.5, NOW(), 1, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Location chalet", 300, NOW(), 2, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Bouffe", 75, NOW(), 3, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Télécabine", 60, NOW(), 4, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Bières au sommet", 42, NOW(), 1, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Entrées téléscope", 30, NOW(), 3, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Visite des grottes", 20, NOW(), 3, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("VTT", 27, NOW(), 4, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Aquaparc", 150, NOW(), 4, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Fondue", 80, NOW(), 2, 1);
 
 -- essence
 insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 1, 1);

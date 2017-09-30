@@ -45,3 +45,12 @@ $app->register(new Silex\Provider\TranslationServiceProvider());
 $app['dao.user'] = function ($app) {
 	return new Pcea\DAO\UserDAO($app['db']);
 };
+$app['dao.event'] = function ($app) {
+	return new Pcea\DAO\EventDAO($app['db']);
+};
+$app['dao.spent'] = function ($app) {
+	$spentDAO = new Pcea\DAO\SpentDAO($app['db']);
+	$spentDAO->setEventDAO($app['dao.event']);
+	$spentDAO->setUserDAO($app['dao.user']);
+	return $spentDAO;
+};

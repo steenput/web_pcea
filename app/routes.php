@@ -2,7 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Pcea\Entity\User;
-use Pcea\Form\Type\UserType;
+use Pcea\Form\Type\RegisterType;
 
 const saltLength = 23;
 
@@ -23,7 +23,7 @@ $app->get('/login', function(Request $request) use ($app) {
 // Add a user
 $app->match('/register', function(Request $request) use ($app) {
 	$user = new User();
-	$userForm = $app['form.factory']->create(UserType::class, $user);
+	$userForm = $app['form.factory']->create(RegisterType::class, $user);
 	$userForm->handleRequest($request);
 	if ($userForm->isSubmitted() && $userForm->isValid()) {
 		// generate a random salt value
@@ -32,10 +32,10 @@ $app->match('/register', function(Request $request) use ($app) {
 		// compute the encoded password
 		$password = $app['security.encoder.bcrypt']->encodePassword($user->getPassword(), $salt);
 		$user->setPassword($password); 
-		$app['dao.user']->save($user);
+		$app['dao.user']->create($user);
 		$app['session']->getFlashBag()->add('success', 'The user ' . $user->getUsername() . ' was successfully created.');
 	}
-	return $app['twig']->render('user_form.html.twig', array(
+	return $app['twig']->render('register_form.html.twig', array(
 		'title' => 'New user',
 		'userForm' => $userForm->createView()));
 })->bind('user_add');
