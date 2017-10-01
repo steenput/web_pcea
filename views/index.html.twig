@@ -10,4 +10,14 @@ Ut id iaculis ipsum. Duis eu dui et leo malesuada aliquam ut non urna. Sed at le
 
 Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam vitae viverra est. In volutpat leo dolor, at aliquam arcu sollicitudin eleifend. In a pretium velit, ut elementum quam. Integer quis auctor diam. Phasellus quis nisi vitae eros elementum cursus. Donec molestie ultricies facilisis. Praesent varius lobortis erat at luctus. Donec pellentesque felis in sodales posuere. Curabitur vitae tellus ac orci pharetra rhoncus. Nam euismod sapien at eros pretium, et imperdiet orci hendrerit. Cras consequat, felis congue bibendum eleifend, arcu est pulvinar magna, id molestie neque neque vel velit. In hac habitasse platea dictumst. Vestibulum non ante orci. Quisque posuere rhoncus lacus, faucibus eleifend augue. Quisque maximus nunc eu lacus congue faucibus. </p>
 
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+{% for event in events %}
+<div>
+    <h2>{{ event.name }}</h2>
+    <p>{{ event.currency }}</p>
+</div>
+{% endfor %}
+
+{% endif %}
+
 {% endblock %}

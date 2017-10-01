@@ -5,6 +5,7 @@
 -- dans les grottes. max et fred font du VTT. Le lendemain, ils vont tous ensemble à Aquaparc et se mangent une 
 -- fondue, avant de rentrer.
 
+-- mot de passe pour les 4 users = john
 insert into pcea.users (username, password, salt, role) values ("bob", '$2y$13$F9v8pl5u5WMrCorP9MLyJeyIsOLj.0/xqKd/hqa5440kyeB7FQ8te', 'YcM=A$nsYzkyeDVjEUa7W9K', 'ROLE_USER');
 insert into pcea.users (username, password, salt, role) values ("max", '$2y$13$F9v8pl5u5WMrCorP9MLyJeyIsOLj.0/xqKd/hqa5440kyeB7FQ8te', 'YcM=A$nsYzkyeDVjEUa7W9K', 'ROLE_USER');
 insert into pcea.users (username, password, salt, role) values ("jean", '$2y$13$F9v8pl5u5WMrCorP9MLyJeyIsOLj.0/xqKd/hqa5440kyeB7FQ8te', 'YcM=A$nsYzkyeDVjEUa7W9K', 'ROLE_USER');

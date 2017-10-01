@@ -10,3 +10,5 @@ $app['db.options'] = array(
 	'user'     => 'root',
 	'password' => '',
 );
+
+$app['monolog.level'] = 'WARNING';

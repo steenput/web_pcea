@@ -8,7 +8,14 @@ const saltLength = 23;
 
 // Index page
 $app->get('/', function() use ($app) {
-	return $app['twig']->render('index.html.twig');
+	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+		$user = $app['user'];
+		$events = $app['dao.event']->readByUser($user->getId());
+		return $app['twig']->render('index.html.twig', array('events' => $events));
+	}
+	else {
+		return $app['twig']->render('index.html.twig');
+	}
 })->bind('index');
 
 // Login form
@@ -20,7 +27,7 @@ $app->get('/login', function(Request $request) use ($app) {
 	));
 })->bind('login');
 
-// Add a user
+// Register user
 $app->match('/register', function(Request $request) use ($app) {
 	$user = new User();
 	$userForm = $app['form.factory']->create(RegisterType::class, $user);
@@ -38,5 +45,5 @@ $app->match('/register', function(Request $request) use ($app) {
 	return $app['twig']->render('register_form.html.twig', array(
 		'title' => 'New user',
 		'userForm' => $userForm->createView()));
-})->bind('user_add');
+})->bind('register');
 
