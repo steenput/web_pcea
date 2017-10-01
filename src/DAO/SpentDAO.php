@@ -30,11 +30,11 @@ class SpentDAO extends DAO {
 		$sql = "SELECT * FROM spents WHERE events_id = ?";
 		$result = $this->getDb()->fetchAll($sql, array($id));
 
-		$events = array();
+		$spents = array();
 		foreach ($result as $row) {
-			$events[$row['id']] = $this->buildEntityObject($row);
+			$spents[$row['id']] = $this->buildEntityObject($row);
 		}
-		return $events;
+		return $spents;
 	}
 
 	public function concernUsers($id) {
@@ -109,15 +109,15 @@ class SpentDAO extends DAO {
 		$spent->setId($row['id']);
 		$spent->setName($row['name']);
 		$spent->setAmount($row['amount']);
-		$spent->setBuyDate($row['buyDate']);
+		$spent->setBuyDate($row['buy_date']);
 
 		if (array_key_exists('buyer', $row)) {
 			$buyer = $this->userDAO->read($row['buyer']);
 			$spent->setBuyer($buyer);
 		}
 
-		if (array_key_exists('event', $row)) {
-			$event = $this->eventDAO->read($row['event']);
+		if (array_key_exists('events_id', $row)) {
+			$event = $this->eventDAO->read($row['events_id']);
 			$spent->setEvent($event);
 		}
 

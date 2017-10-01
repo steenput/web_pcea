@@ -18,6 +18,24 @@ $app->get('/', function() use ($app) {
 	}
 })->bind('index');
 
+// Event page
+$app->get('/event/{id}', function($id) use ($app) {
+	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+		$user = $app['user'];
+		if ($app['dao.event']->isAccessibleBy($id, $user->getId())) {
+			$event = $app['dao.event']->read($id);
+			$spents = $app['dao.spent']->readByEvent($id);
+			return $app['twig']->render('event.html.twig', array('spents' => $spents, 'event' => $event));
+		}
+		else {
+			return $app->redirect('/pcea/web');
+		}
+	}
+	else {
+		return $app->redirect('/pcea/web');
+	}
+})->bind('event');
+
 // Login form
 $app->get('/login', function(Request $request) use ($app) {
 	$app['monolog']->debug(sprintf("'%s'", $request));

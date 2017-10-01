@@ -5,6 +5,17 @@ namespace Pcea\DAO;
 use Pcea\Entity\Event;
 
 class EventDAO extends DAO {
+	public function isAccessibleBy($eventId, $userId) {
+		$sql = "SELECT username FROM users JOIN users_has_events ON id = users_id WHERE events_id = ? AND id = ?";
+
+		if ($this->getDb()->fetchAssoc($sql, array($eventId, $userId))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	public function readByUser($id) {
 		$sql = "SELECT * FROM events JOIN users_has_events ON id = events_id WHERE users_id = ?";
 		$result = $this->getDb()->fetchAll($sql, array($id));
