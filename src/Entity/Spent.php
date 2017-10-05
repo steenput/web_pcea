@@ -135,4 +135,4 @@ class Spent {
 		$this->event = $event;
 		return $this;
 	}
-	}
+}

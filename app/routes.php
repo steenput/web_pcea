@@ -2,7 +2,9 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Pcea\Entity\User;
+use Pcea\Entity\Event;
 use Pcea\Form\Type\RegisterType;
+use Pcea\Form\Type\EventType;
 
 const saltLength = 23;
 
@@ -17,6 +19,26 @@ $app->get('/', function() use ($app) {
 		return $app['twig']->render('index.html.twig');
 	}
 })->bind('index');
+
+// Event page
+$app->match('/newevent', function(Request $request) use ($app) {
+	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+		$user = $app['user'];
+		$event = new Event();
+		$eventForm = $app['form.factory']->create(EventType::class, $event);
+		$eventForm->handleRequest($request);
+		if ($eventForm->isSubmitted() && $eventForm->isValid()) {
+			$app['dao.event']->create($event);
+			$app['session']->getFlashBag()->add('success', 'The event ' . $event->getName() . ' was successfully created.');
+		}
+		return $app['twig']->render('new_event.html.twig', array(
+			'title' => 'New event',
+			'eventForm' => $eventForm->createView()));
+	}
+	else {
+		return $app->redirect('/pcea/web');
+	}
+})->bind('new_event');
 
 // Event page
 $app->get('/event/{id}', function($id) use ($app) {
@@ -64,4 +86,3 @@ $app->match('/register', function(Request $request) use ($app) {
 		'title' => 'New user',
 		'userForm' => $userForm->createView()));
 })->bind('register');
-

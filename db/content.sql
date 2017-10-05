@@ -15,16 +15,16 @@ insert into pcea.events (name, currency) values ("Weekend montagne", "CHF");
 insert into pcea.events (name, currency) values ("Restaurant", "CHF");
 insert into pcea.events (name, currency) values ("Weekend à la mer", "CHF");
 
-insert into pcea.users_has_events (users_id, events_id) values (1, 1);
-insert into pcea.users_has_events (users_id, events_id) values (2, 1);
-insert into pcea.users_has_events (users_id, events_id) values (3, 1);
-insert into pcea.users_has_events (users_id, events_id) values (4, 1);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (1, 1, 1);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (2, 1, 1);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (3, 1, 2);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (4, 1, 2);
 
-insert into pcea.users_has_events (users_id, events_id) values (1, 2);
-insert into pcea.users_has_events (users_id, events_id) values (2, 2);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (1, 2, 1);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (2, 2, 1);
 
-insert into pcea.users_has_events (users_id, events_id) values (3, 3);
-insert into pcea.users_has_events (users_id, events_id) values (4, 3);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (3, 3, 1);
+insert into pcea.users_has_events (users_id, events_id, user_weight) values (4, 3, 1);
 
 insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Essence", 50.5, NOW(), 1, 1);
 insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Location chalet", 300, NOW(), 2, 1);
@@ -38,55 +38,55 @@ insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Aqua
 insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Fondue", 80, NOW(), 2, 1);
 
 -- essence
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 1, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 1, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 1, 2);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 1, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 1);
 
 -- chalet
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 2, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 2, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 2, 2);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 2, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 2);
 
 -- bouffe
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 3, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 3, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 3, 2);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 3, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 3);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 3);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 3);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 3);
 
 -- télécabine
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 4, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 4, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 4, 2);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 4, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 4);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 4);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 4);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 4);
 
 -- bières
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 5, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 5, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 5, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 5, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 5);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 5);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 5);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 5);
 
 -- téléscope
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 6, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 6, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 6);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 6);
 
 -- grottes
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 7, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 7, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 7);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 7);
 
 -- vtt
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 8, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 8, 1);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 8);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 8);
 
 -- aquaparc
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 9, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 9, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 9, 2);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 9, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 9);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 9);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 9);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 9);
 
 -- fondue
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (1, 10, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (2, 10, 1);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (3, 10, 2);
-insert into pcea.users_has_spents (users_id, spents_id, user_weight) values (4, 10, 2);
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 10);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 10);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 10);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 10);
