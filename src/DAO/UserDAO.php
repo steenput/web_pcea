@@ -9,6 +9,11 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Pcea\Entity\User;
 
 class UserDAO extends DAO implements UserProviderInterface {
+	public function readAll() {
+		$sql = "SELECT * FROM users";
+		return $this->getDb()->fetchAll($sql);
+	}
+
 	/**
 	 * Create an user into the database.
 	 *

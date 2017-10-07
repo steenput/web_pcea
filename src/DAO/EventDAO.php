@@ -42,6 +42,15 @@ class EventDAO extends DAO {
 		$id = $this->getDb()->lastInsertId();
 		$event->setId($id);
 
+		foreach ($event->getUsers() as $userId) {
+			$usersEventsData = array(
+				'users_id'  => $userId,
+				'events_id' => $event->getId()
+			);
+
+			$this->getDb()->insert('users_has_events', $usersEventsData);
+		}
+
 		return $event;
 	}
 

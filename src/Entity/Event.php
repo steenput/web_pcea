@@ -6,6 +6,7 @@ class Event {
 	private $id;
 	private $name;
 	private $currency;
+	private $users;
 
 	/**
 	 * Gets the value of id
@@ -61,6 +62,23 @@ class Event {
 	 */
 	public function setCurrency($currency) {
 		$this->currency = $currency;
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getUsers() {
+		return $this->users;
+	}
+
+	/**
+	 * @param mixed $users
+	 *
+	 * @return self
+	 */
+	public function setUsers($users) {
+		$this->users = $users;
 		return $this;
 	}
 }

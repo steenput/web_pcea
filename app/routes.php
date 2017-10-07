@@ -3,6 +3,7 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -28,10 +29,15 @@ $app->match('/newevent', function(Request $request) use ($app) {
 	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
 		$user = $app['user'];
 		$event = new Event();
+		$users = $app['dao.user']->readAll();
 
 		$eventForm = $app['form.factory']->createBuilder(FormType::class, $event)
 			->add('name', TextType::class)
 			->add('currency', CurrencyType::class)
+			->add('users', ChoiceType::class, array(
+				'choices'  => array_column($users, 'id', 'username'),
+				'multiple' => true
+			))
 			->getForm();
 
 		$eventForm->handleRequest($request);

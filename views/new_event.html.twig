@@ -35,6 +35,16 @@
 		</div>
 	</div>
 	<div class="form-group">
+		{{ form_label(eventForm.users, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_widget(eventForm.users, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
 		<div class="col-sm-offset-5 col-sm-3">
 			<input type="submit" class="btn btn-primary" value="Save" />
 		</div>
