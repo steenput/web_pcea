@@ -1,10 +1,13 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Pcea\Entity\User;
 use Pcea\Entity\Event;
-use Pcea\Form\Type\RegisterType;
-use Pcea\Form\Type\EventType;
 
 const saltLength = 23;
 
@@ -25,7 +28,12 @@ $app->match('/newevent', function(Request $request) use ($app) {
 	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
 		$user = $app['user'];
 		$event = new Event();
-		$eventForm = $app['form.factory']->create(EventType::class, $event);
+
+		$eventForm = $app['form.factory']->createBuilder(FormType::class, $event)
+			->add('name', TextType::class)
+			->add('currency', CurrencyType::class)
+			->getForm();
+
 		$eventForm->handleRequest($request);
 		if ($eventForm->isSubmitted() && $eventForm->isValid()) {
 			$app['dao.event']->create($event);
@@ -70,7 +78,18 @@ $app->get('/login', function(Request $request) use ($app) {
 // Register user
 $app->match('/register', function(Request $request) use ($app) {
 	$user = new User();
-	$userForm = $app['form.factory']->create(RegisterType::class, $user);
+	
+	$userForm = $app['form.factory']->createBuilder(FormType::class, $user)
+			->add('username', TextType::class)
+			->add('password', RepeatedType::class, array(
+				'type'            => PasswordType::class,
+				'invalid_message' => 'The password fields must match.',
+				'options'         => array('required' => true),
+				'first_options'   => array('label' => 'Password'),
+				'second_options'  => array('label' => 'Repeat password'),
+			))
+			->getForm();
+
 	$userForm->handleRequest($request);
 	if ($userForm->isSubmitted() && $userForm->isValid()) {
 		// generate a random salt value
