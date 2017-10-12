@@ -9,6 +9,11 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Pcea\Entity\User;
 
 class UserDAO extends DAO implements UserProviderInterface {
+	public function readAllFromEvent($id) {
+		$sql = "SELECT * FROM users JOIN users_has_events ON id = users_id WHERE events_id = " . $id;
+		return $this->getDb()->fetchAll($sql);
+	}
+
 	public function readAll() {
 		$sql = "SELECT * FROM users";
 		return $this->getDb()->fetchAll($sql);

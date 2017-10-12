@@ -1,0 +1,76 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2 class="text-center">{{ block('title') }}</h2>
+{% for flashMessage in app.session.flashbag.get('success') %}
+<div class="alert alert-success">
+	{{ flashMessage }}
+</div>
+{% endfor %}
+
+
+<div class="well">
+{{ form_start(spentForm, { 'attr': {'class': 'form-horizontal'} }) }}
+	<div class="form-group">
+		{{ form_label(spentForm.name, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_errors(spentForm.name) }}
+			{{ form_widget(spentForm.name, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		{{ form_label(spentForm.amount, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_errors(spentForm.amount) }}
+			{{ form_widget(spentForm.amount, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		{{ form_label(spentForm.buyDate, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_errors(spentForm.buyDate) }}
+			{{ form_widget(spentForm.buyDate, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		{{ form_label(spentForm.buyer, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_widget(spentForm.buyer, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		{{ form_label(spentForm.users, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_widget(spentForm.users, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-5 col-sm-3">
+			<input type="submit" class="btn btn-primary" value="Save" />
+		</div>
+	</div>
+{{ form_end(spentForm) }}
+</div>
+{% endblock %}

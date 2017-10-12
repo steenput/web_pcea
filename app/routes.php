@@ -3,12 +3,15 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Pcea\Entity\User;
 use Pcea\Entity\Event;
+use Pcea\Entity\Spent;
 
 const saltLength = 23;
 
@@ -24,10 +27,9 @@ $app->get('/', function() use ($app) {
 	}
 })->bind('index');
 
-// Event page
+// New event page
 $app->match('/newevent', function(Request $request) use ($app) {
 	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
-		$user = $app['user'];
 		$event = new Event();
 		$users = $app['dao.user']->readAll();
 
@@ -71,6 +73,50 @@ $app->get('/event/{id}', function($id) use ($app) {
 		return $app->redirect('/pcea/web');
 	}
 })->bind('event');
+
+// New spent page
+$app->match('/event/{id}/newspent', function($id, Request $request) use ($app) {
+	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+		$user = $app['user'];
+		if ($app['dao.event']->isAccessibleBy($id, $user->getId())) {
+			$spent = new Spent();
+			$users = $app['dao.user']->readAllFromEvent($id);
+
+			$spentForm = $app['form.factory']->createBuilder(FormType::class, $spent)
+				->add('name', TextType::class)
+				->add('amount', NumberType::class)
+				->add('buyDate', DateType::class, array(
+					'input' => 'string'
+				))
+				->add('buyer', ChoiceType::class, array(
+					'choices'  => array_column($users, 'id', 'username')
+				))
+				->add('users', ChoiceType::class, array(
+					'choices'  => array_column($users, 'id', 'username'),
+					'expanded' => true,
+					'multiple' => true
+				))
+				->getForm();
+
+				$spentForm->handleRequest($request);
+				if ($spentForm->isSubmitted() && $spentForm->isValid()) {
+					$spent->setEvent($id);
+					$app['dao.spent']->create($spent);
+					$app['session']->getFlashBag()->add('success', 'The spent ' . $spent->getName() . ' was successfully created.');
+				}
+				return $app['twig']->render('new_spent.html.twig', array(
+					'title' => 'New spent',
+					'spentForm' => $spentForm->createView()
+				));
+		}
+		else {
+			return $app->redirect('/pcea/web');
+		}
+	}
+	else {
+		return $app->redirect('/pcea/web');
+	}
+})->bind('new_spent');
 
 // Login form
 $app->get('/login', function(Request $request) use ($app) {

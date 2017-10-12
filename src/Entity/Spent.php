@@ -8,13 +8,8 @@ class Spent {
 	private $amount;
 	private $buyDate;
 	private $buyer;
-
-	/**
-	 * Event associated
-	 *
-	 * @var \Pcea\Entity\Event
-	 */
 	private $event;
+	private $users;
 
 	/**
 	 * Gets the value of id
@@ -133,6 +128,23 @@ class Spent {
 	 */
 	public function setEvent($event) {
 		$this->event = $event;
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getUsers() {
+		return $this->users;
+	}
+
+	/**
+	 * @param mixed $users
+	 *
+	 * @return self
+	 */
+	public function setUsers($users) {
+		$this->users = $users;
 		return $this;
 	}
 }

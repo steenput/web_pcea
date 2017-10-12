@@ -33,6 +33,9 @@ class SpentDAO extends DAO {
 		$spents = array();
 		foreach ($result as $row) {
 			$spents[$row['id']] = $this->buildEntityObject($row);
+			$sql = "SELECT username FROM users JOIN users_has_spents ON id = users_id WHERE spents_id = ?";
+			$result = $this->getDb()->fetchAll($sql, array($row['id']));
+			$spents[$row['id']]->setUsers($result);
 		}
 		return $spents;
 	}
@@ -56,15 +59,24 @@ class SpentDAO extends DAO {
 	public function create(Spent $spent) {
 		$spentData = array(
 			'name' => $spent->getName(),
-			'amount' => $spent->getCurrency(),
-			'buyDate' => $spent->getBuyDate(),
+			'amount' => $spent->getAmount(),
+			'buy_date' => $spent->getBuyDate(),
 			'buyer' => $spent->getBuyer(),
-			'event' => $spent->getEvent()
+			'events_id' => $spent->getEvent()
 			);
 
 		$this->getDb()->insert('spents', $spentData);
 		$id = $this->getDb()->lastInsertId();
 		$spent->setId($id);
+
+		foreach ($spent->getUsers() as $userId) {
+			$usersSpentsData = array(
+				'users_id'  => $userId,
+				'spents_id' => $spent->getId()
+			);
+
+			$this->getDb()->insert('users_has_spents', $usersSpentsData);
+		}
 
 		return $spent;
 	}
@@ -87,10 +99,10 @@ class SpentDAO extends DAO {
 	public function update(Spent $spent) {
 		$spentData = array(
 			'name' => $spent->getName(),
-			'amount' => $spent->getCurrency(),
-			'buyDate' => $spent->getBuyDate(),
+			'amount' => $spent->getAmount(),
+			'buy_date' => $spent->getBuyDate(),
 			'buyer' => $spent->getBuyer(),
-			'event' => $spent->getEvent()
+			'events_id' => $spent->getEvent()
 			);
 
 		$this->getDb()->update('spents', $spentData, array('id' => $spent->getId()));

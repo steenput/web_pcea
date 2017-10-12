@@ -6,12 +6,19 @@
 
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 <h1>Event {{ event.name }}</h1>
+<p><a href="{{ path('new_spent', { 'id': event.id }) }}">New spent</a></p>
 {% for spent in spents %}
 <div>
-    <h2>Name : {{ spent.name }}</h2>
-    <p>Amount : {{ spent.amount }}</p>
-    <p>Buy date : {{ spent.buyDate }}</p>
-    <p>Buyer : {{ spent.buyer.username }}</p>
+	<h2>Name : {{ spent.name }}</h2>
+	<p>Amount : {{ spent.amount }}</p>
+	<p>Buy date : {{ spent.buyDate }}</p>
+	<p>Buyer : {{ spent.buyer.username }}</p>
+	<p>Concernés : </p>
+	<ul>
+	{% for user in spent.users %}
+		<li>{{ user.username|e }}</li>
+	{% endfor %}
+</ul>
 </div>
 {% endfor %}
 
