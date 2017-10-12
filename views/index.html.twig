@@ -13,7 +13,7 @@ Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 {% for event in events %}
 <div>
-    <h2><a href="{{ path('event', { 'id': event.id }) }}">{{ event.name }}</a></h2>
+    <h2><a href="{{ path('event', { 'eventId': event.id }) }}">{{ event.name }}</a></h2>
     <p>{{ event.currency }}</p>
 </div>
 {% endfor %}

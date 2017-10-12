@@ -10,6 +10,7 @@ class Spent {
 	private $buyer;
 	private $event;
 	private $users;
+	private $part;
 
 	/**
 	 * Gets the value of id
@@ -145,6 +146,26 @@ class Spent {
 	 */
 	public function setUsers($users) {
 		$this->users = $users;
+		return $this;
+	}
+
+	/**
+	 * Gets the value of part
+
+	 * @return mixed
+	 */
+	public function getPart() {
+		return $this->part;
+	}
+	
+	/**
+	 * Sets the value of part
+	 *
+	 * @param mixed $part
+	 * @return self
+	 */
+	public function setPart($part) {
+		$this->part = $part;
 		return $this;
 	}
 }

@@ -4,24 +4,43 @@
 
 {% block content %}
 
-{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 <h1>Event {{ event.name }}</h1>
-<p><a href="{{ path('new_spent', { 'id': event.id }) }}">New spent</a></p>
-{% for spent in spents %}
-<div>
-	<h2>Name : {{ spent.name }}</h2>
-	<p>Amount : {{ spent.amount }}</p>
-	<p>Buy date : {{ spent.buyDate }}</p>
-	<p>Buyer : {{ spent.buyer.username }}</p>
-	<p>Concernés : </p>
-	<ul>
-	{% for user in spent.users %}
-		<li>{{ user.username|e }}</li>
+<p><a href="{{ path('new_spent', { 'eventId': event.id }) }}">New spent</a></p>
+<table class="table table-bordered table-striped table-condensed">
+	<tr>
+		<th>Name</th>
+		<th>Amount</th>
+		<th>Buy date</th>
+		<th>Buyer</th>
+		<th>Concern</th>
+		<th>Your part</th>
+	</tr>
+	{% for spent in spents %}
+	<tr>
+		<td>{{ spent.name }}</td>
+		<td>{{ spent.amount }}</td>
+		<td>{{ spent.buyDate }}</td>
+		<td>{{ spent.buyer.username }}</td>
+		<td>
+			{% for user in spent.users %}
+				{% if loop.last %}
+					{{ user.username|e }}
+				{% else %}
+					{{ user.username|e }},
+				{% endif %}
+			{% endfor %}
+		</td>
+		<td>{{ spent.part }}</td>
+	</tr>
 	{% endfor %}
-</ul>
-</div>
-{% endfor %}
-
-{% endif %}
+	<tr>
+		<td>Total</td>
+		<td>{{ grandTotal }}</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>{{ total }}</td>
+	</tr>
+</table>
 
 {% endblock %}

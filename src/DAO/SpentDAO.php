@@ -26,6 +26,19 @@ class SpentDAO extends DAO {
 		$this->userDAO = $userDAO;
 	}
 
+	public function nbConcerned($spentId, $eventId) {
+		$sql = "SELECT SUM(user_weight) FROM users_has_events JOIN users_has_spents ON 
+		users_has_events.users_id = users_has_spents.users_id WHERE spents_id = ? AND events_id = ?";
+		$result = $this->getDb()->fetchAll($sql, array($spentId, $eventId));
+
+		$nb = $result[0]['SUM(user_weight)'];
+
+		if ($nb)
+			return $nb;
+		else
+			throw new Exception(sprintf('Zero division'));
+	}
+
 	public function readByEvent($id) {
 		$sql = "SELECT * FROM spents WHERE events_id = ?";
 		$result = $this->getDb()->fetchAll($sql, array($id));

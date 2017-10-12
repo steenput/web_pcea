@@ -57,13 +57,36 @@ $app->match('/newevent', function(Request $request) use ($app) {
 })->bind('new_event');
 
 // Event page
-$app->get('/event/{id}', function($id) use ($app) {
+$app->get('/event/{eventId}', function($eventId) use ($app) {
 	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
 		$user = $app['user'];
-		if ($app['dao.event']->isAccessibleBy($id, $user->getId())) {
-			$event = $app['dao.event']->read($id);
-			$spents = $app['dao.spent']->readByEvent($id);
-			return $app['twig']->render('event.html.twig', array('spents' => $spents, 'event' => $event));
+		if ($app['dao.event']->isAccessibleBy($eventId, $user->getId())) {
+			$event = $app['dao.event']->read($eventId);
+			$spents = $app['dao.spent']->readByEvent($eventId);
+			
+			$total = 0;
+			$grandTotal = 0;
+			$weight = floatval($app['dao.event']->getWeight($eventId, $user->getId()));
+			
+			foreach ($spents as $spent) {
+				$spent->setPart(0);
+
+				if (in_array(array('username' => $user->getUsername()), $spent->getUsers())) {
+					$amount = floatval($spent->getAmount());
+					$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
+					$spent->setPart(($amount / $nbConcerned) * $weight);
+					$total += $spent->getPart();
+				}
+
+				$grandTotal += $amount;
+			}
+
+			return $app['twig']->render('event.html.twig', array(
+				'spents' => $spents,
+				'event' => $event,
+				'total' => $total,
+				'grandTotal' => $grandTotal
+			));
 		}
 		else {
 			return $app->redirect('/pcea/web');
@@ -75,12 +98,12 @@ $app->get('/event/{id}', function($id) use ($app) {
 })->bind('event');
 
 // New spent page
-$app->match('/event/{id}/newspent', function($id, Request $request) use ($app) {
+$app->match('/event/{eventId}/newspent', function($eventId, Request $request) use ($app) {
 	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
 		$user = $app['user'];
-		if ($app['dao.event']->isAccessibleBy($id, $user->getId())) {
+		if ($app['dao.event']->isAccessibleBy($eventId, $user->getId())) {
 			$spent = new Spent();
-			$users = $app['dao.user']->readAllFromEvent($id);
+			$users = $app['dao.user']->readAllFromEvent($eventId);
 
 			$spentForm = $app['form.factory']->createBuilder(FormType::class, $spent)
 				->add('name', TextType::class)
@@ -100,7 +123,7 @@ $app->match('/event/{id}/newspent', function($id, Request $request) use ($app) {
 
 				$spentForm->handleRequest($request);
 				if ($spentForm->isSubmitted() && $spentForm->isValid()) {
-					$spent->setEvent($id);
+					$spent->setEvent($eventId);
 					$app['dao.spent']->create($spent);
 					$app['session']->getFlashBag()->add('success', 'The spent ' . $spent->getName() . ' was successfully created.');
 				}
