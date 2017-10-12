@@ -6,6 +6,10 @@
 \usepackage[francais]{babel}
 \usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}
 \usepackage{graphicx}
+\usepackage{minted}
+\usemintedstyle{colorful}
+\usepackage{float}
+\floatplacement{figure}{H}
 \usepackage{authblk}
 \usepackage{enumitem}
 \usepackage{hyperref} 
@@ -40,7 +44,7 @@ personnes du groupe d’amis.
 	\begin{itemize}
 		\item Base de données :
 		\begin{itemize}
-			\item \href{https://www.mysql.com/}{MySQ 5.7}, avec
+			\item \href{https://www.mysql.com/}{MySQL 5.7}, avec
 			\item \href{https://www.mysql.com/products/workbench/}{MySQL Workbench 6.3} (pour la création du schéma)
 		\end{itemize}
 		\item \href{https://httpd.apache.org/}{Apache 2.4}, serveur HTTP
@@ -49,6 +53,7 @@ personnes du groupe d’amis.
 	\end{itemize}
 	\item Front-end :
 	\begin{itemize}
+		\item \href{https://twig.symfony.com/}{Twig}, moteur de templates pour PHP (utilisé de concert avec Silex)
 		\item \href{https://jquery.org/}{jQuery}
 		\item \href{http://getbootstrap.com/}{Bootstrap V4} pour le design en CSS
 	\end{itemize}
@@ -57,12 +62,25 @@ personnes du groupe d’amis.
 
 \section{Back-end}
 \subsection{Base de données}
-Les technologies imposées pour la base de données de ce travail pratique sont SQLite et MySQL. J'ai choisi d'utiliser 
+Les technologies imposées pour la base de données de ce travail pratique sont SQLite ou MySQL. J'ai choisi d'utiliser 
 MySQL, car je suis familier avec. J'ai profité de cette occasion pour découvrir et utiliser Workbench, un programme 
 permettant de modéliser les tables et relations d'une base de données de manière graphique. Une fois le model terminé, 
 Workbench offre la possibilité de l'exporter en instructions SQL (création de tables et contraintes).
 \bigbreak
+
 Mon schéma est constitué des tables suivantes :
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1.0\textwidth]{schema.png}
+	\end{center}
+	\caption{Schéma de la base de données relationnelle}
+\end{figure}
+Il y a 3 tables principales : les utilisateurs, les événements et les dépenses. 2 autres tables secondaires 
+font la liaison entre les utilisateurs et les événements et les utilisateurs et les dépenses respectivement 
+(liaison Many-To-Many). La table des utilisateurs possède un champ \mintinline{sql}{salt} et un autre 
+\mintinline{sql}{role}, ils sont nécessaires au fonctionnement de Silex (explications ). Le poids de chaque 
+utilisateur au sein d'un événement est indiqué dans la table croisée \mintinline{sql}{users_has_events}. 
+Chaque dépense référence l'acheteur (dans \mintinline{sql}{users}) et l'événement lié (dans \mintinline{sql}{events}).
 
 \subsection{Silex}
 Je profite également de ce TP pour appréhender Silex, un micro framework PHP dérivé de Symfony (que j'ai eu l'occasion 
