@@ -53,17 +53,6 @@ class SpentDAO extends DAO {
 		return $spents;
 	}
 
-	public function concernUsers($id) {
-		$sql = "SELECT username FROM users JOIN users_has_spents ON id = users_id WHERE spents_id = ?";
-		$result = $this->getDb()->fetchAll($sql, array($id));
-
-		$users = array();
-		foreach ($result as $row) {
-			$users[$row['id']] = $row;
-		}
-		return $users;
-	}
-
 	/**
 	 * Create a spent into the database.
 	 *
