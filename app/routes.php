@@ -45,7 +45,7 @@ $app->match('/newevent', function(Request $request) use ($app) {
 		$eventForm->handleRequest($request);
 		if ($eventForm->isSubmitted() && $eventForm->isValid()) {
 			$app['dao.event']->create($event);
-			$app['session']->getFlashBag()->add('success', 'The event ' . $event->getName() . ' was successfully created.');
+			return $app->redirect('/pcea/web/event/' . $event->getId());
 		}
 		return $app['twig']->render('new_event.html.twig', array(
 			'title' => 'New event',
@@ -125,11 +125,12 @@ $app->match('/event/{eventId}/newspent', function($eventId, Request $request) us
 				if ($spentForm->isSubmitted() && $spentForm->isValid()) {
 					$spent->setEvent($eventId);
 					$app['dao.spent']->create($spent);
-					$app['session']->getFlashBag()->add('success', 'The spent ' . $spent->getName() . ' was successfully created.');
+					return $app->redirect('/pcea/web/event/' . $eventId);
 				}
 				return $app['twig']->render('new_spent.html.twig', array(
 					'title' => 'New spent',
-					'spentForm' => $spentForm->createView()
+					'spentForm' => $spentForm->createView(),
+					'eventId' => $eventId
 				));
 		}
 		else {
@@ -152,31 +153,37 @@ $app->get('/login', function(Request $request) use ($app) {
 
 // Register user
 $app->match('/register', function(Request $request) use ($app) {
-	$user = new User();
-	
-	$userForm = $app['form.factory']->createBuilder(FormType::class, $user)
-			->add('username', TextType::class)
-			->add('password', RepeatedType::class, array(
-				'type'            => PasswordType::class,
-				'invalid_message' => 'The password fields must match.',
-				'options'         => array('required' => true),
-				'first_options'   => array('label' => 'Password'),
-				'second_options'  => array('label' => 'Repeat password'),
-			))
-			->getForm();
-
-	$userForm->handleRequest($request);
-	if ($userForm->isSubmitted() && $userForm->isValid()) {
-		// generate a random salt value
-		$salt = substr(md5(time()), 0, saltLength);
-		$user->setSalt($salt);
-		// compute the encoded password
-		$password = $app['security.encoder.bcrypt']->encodePassword($user->getPassword(), $salt);
-		$user->setPassword($password); 
-		$app['dao.user']->create($user);
-		$app['session']->getFlashBag()->add('success', 'The user ' . $user->getUsername() . ' was successfully created.');
+	if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+		return $app->redirect('/pcea/web');
 	}
-	return $app['twig']->render('register_form.html.twig', array(
-		'title' => 'New user',
-		'userForm' => $userForm->createView()));
+	else {
+		$user = new User();
+		
+		$userForm = $app['form.factory']->createBuilder(FormType::class, $user)
+				->add('username', TextType::class)
+				->add('password', RepeatedType::class, array(
+					'type'            => PasswordType::class,
+					'invalid_message' => 'The password fields must match.',
+					'options'         => array('required' => true),
+					'first_options'   => array('label' => 'Password'),
+					'second_options'  => array('label' => 'Repeat password'),
+				))
+				->getForm();
+
+		$userForm->handleRequest($request);
+		if ($userForm->isSubmitted() && $userForm->isValid()) {
+			// generate a random salt value
+			$salt = substr(md5(time()), 0, saltLength);
+			$user->setSalt($salt);
+			// compute the encoded password
+			$password = $app['security.encoder.bcrypt']->encodePassword($user->getPassword(), $salt);
+			$user->setPassword($password); 
+			$app['dao.user']->create($user);
+			return $app->redirect('/pcea/web');
+		}
+		return $app['twig']->render('register_form.html.twig', array(
+			'title' => 'New user',
+			'userForm' => $userForm->createView())
+		);
+	}
 })->bind('register');

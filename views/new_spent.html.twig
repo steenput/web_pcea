@@ -4,12 +4,8 @@
 
 {% block content %}
 <h2 class="text-center">{{ block('title') }}</h2>
-{% for flashMessage in app.session.flashbag.get('success') %}
-<div class="alert alert-success">
-	{{ flashMessage }}
-</div>
-{% endfor %}
 
+<p><a href="{{ path('event', { 'eventId': eventId }) }}">Return to event</a></p>
 
 <div class="well">
 {{ form_start(spentForm, { 'attr': {'class': 'form-horizontal'} }) }}
