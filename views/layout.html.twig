@@ -22,9 +22,9 @@
 				</div>
 				<ul class="nav navbar-nav">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-					<li><a href="{{ path('new_event') }}">Créer un nouvel événement</a></li>
+					<li><a href="{{ path('new_event') }}">Create new event</a></li>
 					{% else %}
-					<li><a href="{{ path('register') }}">Créer un compte utilisateur</a></li>
+					<li><a href="{{ path('register') }}">Register user</a></li>
 					{% endif %}
 				</ul>
 				<div class="collapse navbar-collapse" id="navbar-collapse-target">
