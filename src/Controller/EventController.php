@@ -31,7 +31,7 @@ class EventController {
 					if (in_array(array('username' => $user->getUsername()), $spent->getUsers())) {
 						$amount = floatval($spent->getAmount());
 						$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
-						$spent->setPart(($amount / $nbConcerned) * $weight);
+						$spent->setPart(round(($amount / $nbConcerned) * $weight, 2, PHP_ROUND_HALF_UP));
 						$total += $spent->getPart();
 					}
 
