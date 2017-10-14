@@ -5,6 +5,10 @@
 {% block content %}
 
 <h1>Event {{ event.name }}</h1>
+
+<div id="placeholder" style="width:600px;height:300px"></div>
+
+<h2>Spents</h2>
 <p><a href="{{ path('new_spent', { 'eventId': event.id }) }}">New spent</a></p>
 <table class="table table-bordered table-striped table-condensed">
 	<tr>
@@ -43,7 +47,7 @@
 	</tr>
 </table>
 
-<h1>Users</h1>
+<h2>Users</h2>
 <table class="table table-bordered table-striped table-condensed">
 	<tr>
 		<th>Username</th>
@@ -57,4 +61,31 @@
 	{% endfor %}
 </table>
 
+{% endblock %}
+
+
+{% block script %}
+<script>
+	$(function() {
+		let data = [ 
+			
+			["January", 1], ["February", -2], ["March", 4], ["April", 5], ["May", 2], ["June", 3] 
+		];
+
+		$.plot("#placeholder", [ data ], {
+			series: {
+				bars: {
+					show: true,
+					barWidth: 0.6,
+					align: "center",
+				},
+				color: 2
+			},
+			xaxis: {
+				mode: "categories",
+				tickLength: 0
+			}
+		});
+	});
+</script>
 {% endblock %}
