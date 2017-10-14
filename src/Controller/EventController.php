@@ -61,7 +61,10 @@ class EventController {
 
 			$eventForm = $app['form.factory']->createBuilder(FormType::class, $event)
 				->add('name', TextType::class)
-				->add('currency', CurrencyType::class)
+				->add('currency', CurrencyType::class, array(
+					'preferred_choices' => array('CHF', 'EUR', 'USD')
+
+				))
 				->add('users', ChoiceType::class, array(
 					'choices'  => array_column($users, 'id', 'username'),
 					'multiple' => true
