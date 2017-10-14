@@ -43,4 +43,18 @@
 	</tr>
 </table>
 
+<h1>Users</h1>
+<table class="table table-bordered table-striped table-condensed">
+	<tr>
+		<th>Username</th>
+		<th>Weight</th>
+	</tr>
+	{% for user in event.users %}
+	<tr>
+		<td>{{ user.username }}</td>
+		<td>{{ user.weight }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
 {% endblock %}

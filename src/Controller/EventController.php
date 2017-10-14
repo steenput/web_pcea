@@ -27,9 +27,9 @@ class EventController {
 				
 				foreach ($spents as $spent) {
 					$spent->setPart(0);
+					$amount = floatval($spent->getAmount());
 
 					if (in_array(array('username' => $user->getUsername()), $spent->getUsers())) {
-						$amount = floatval($spent->getAmount());
 						$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
 						$spent->setPart(round(($amount / $nbConcerned) * $weight, 2, PHP_ROUND_HALF_UP));
 						$total += $spent->getPart();

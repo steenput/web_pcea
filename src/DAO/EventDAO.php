@@ -3,6 +3,7 @@
 namespace Pcea\DAO;
 
 use Pcea\Entity\Event;
+use Pcea\Entity\User;
 
 class EventDAO extends DAO {
 	public function getWeight($eventId, $userId) {
@@ -68,13 +69,29 @@ class EventDAO extends DAO {
 	}
 
 	public function read($id) {
-		$sql = "select * from events where id=?";
+		$sql = "SELECT * FROM events WHERE id=?";
 		$row = $this->getDb()->fetchAssoc($sql, array($id));
 
-		if ($row)
-			return $this->buildEntityObject($row);
-		else
+		if ($row) {
+			$event = $this->buildEntityObject($row);
+			$sql = "SELECT id, username, user_weight FROM users JOIN users_has_events ON id = users_id WHERE events_id = ?";
+			$dbUsers = $this->getDb()->fetchAll($sql, array($id));
+			$users = array();
+
+			foreach ($dbUsers as $u) {
+				$user = new User();
+				$user->setId($u['id']);
+				$user->setUsername($u['username']);
+				$user->setWeight($u['user_weight']);
+				$users[] = $user;
+			}
+			$event->setUsers($users);
+
+			return $event;
+		}
+		else {
 			throw new Exception(sprintf('Event "%s" not found.', $id));
+		}
 	}
 
 	/**

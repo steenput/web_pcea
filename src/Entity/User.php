@@ -10,6 +10,7 @@ class User implements UserInterface {
 	private $password;
 	private $salt;
 	private $role;
+	private $weight;
 
 	public function getId() {
 		return $this->id;
@@ -68,5 +69,25 @@ class User implements UserInterface {
 	 */
 	public function eraseCredentials() {
 		// Nothing to do here
+	}
+
+	/**
+	 * Gets the value of weight
+
+	 * @return mixed
+	 */
+	public function getWeight() {
+		return $this->weight;
+	}
+	
+	/**
+	 * Sets the value of weight
+	 *
+	 * @param mixed $weight
+	 * @return self
+	 */
+	public function setWeight($weight) {
+		$this->weight = $weight;
+		return $this;
 	}
 }

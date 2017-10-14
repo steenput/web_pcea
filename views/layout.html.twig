@@ -9,59 +9,59 @@
 	<title>Petits comptes entre amis - {% block title %}{% endblock %}</title>
 </head>
 <body>
+	<div class="container">
+	<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
 		<div class="container">
-		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-target">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="{{ path('index') }}">Petits comptes entre amis</a>
-				</div>
-				<ul class="nav navbar-nav">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-target">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="{{ path('index') }}">Petits comptes entre amis</a>
+			</div>
+			<ul class="nav navbar-nav">
+				{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+				<li><a href="{{ path('new_event') }}">Create new event</a></li>
+				{% else %}
+				<li><a href="{{ path('register') }}">Register user</a></li>
+				{% endif %}
+			</ul>
+			<div class="collapse navbar-collapse" id="navbar-collapse-target">
+				<ul class="nav navbar-nav navbar-right">
 					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-					<li><a href="{{ path('new_event') }}">Create new event</a></li>
+						<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-user"></span> Welcome, {{ app.user.username }} <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="{{ path('logout') }}">Log out</a></li>
+							</ul>
+						</li>
 					{% else %}
-					<li><a href="{{ path('register') }}">Register user</a></li>
+						<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span class="glyphicon glyphicon-user"></span> Not connected <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="{{ path('login') }}">Log in</a></li>
+							</ul>
+						</li>
 					{% endif %}
 				</ul>
-				<div class="collapse navbar-collapse" id="navbar-collapse-target">
-					<ul class="nav navbar-nav navbar-right">
-						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-							<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<span class="glyphicon glyphicon-user"></span> Welcome, {{ app.user.username }} <b class="caret"></b></a>
-								<ul class="dropdown-menu">
-									<li><a href="{{ path('logout') }}">Log out</a></li>
-								</ul>
-							</li>
-						{% else %}
-							<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<span class="glyphicon glyphicon-user"></span> Not connected <b class="caret"></b></a>
-								<ul class="dropdown-menu">
-									<li><a href="{{ path('login') }}">Log in</a></li>
-								</ul>
-							</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div><!-- /.container -->
-		</nav>
-		<div id="content">{% block content %}{% endblock %}</div>
-		<hr>
-		<footer class="footer">
-			Petits comptes entre amis 2017 - Steven Liatti
-		</footer>
-	</div>
-		<script
-			src="https://code.jquery.com/jquery-3.2.1.min.js"
-			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-			crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+			</div>
+		</div><!-- /.container -->
+	</nav>
+	<div id="content" class="row">{% block content %}{% endblock %}</div>
+	<hr>
+	<footer class="row footer">
+		Petits comptes entre amis 2017 - Steven Liatti
+	</footer>
+</div>
+<script
+	src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-		{% block script %}{% endblock %}
+{% block script %}{% endblock %}
 </body>
 </html>
