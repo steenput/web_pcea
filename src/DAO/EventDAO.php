@@ -44,7 +44,7 @@ class EventDAO extends DAO {
 	 *
 	 * @param \Pcea\Entity\Event $event The event to create
 	 */
-	public function create(Event $event) {
+	public function create(Event $event, $weight) {
 		$eventData = array(
 			'name' => $event->getName(),
 			'currency' => $event->getCurrency()
@@ -57,7 +57,8 @@ class EventDAO extends DAO {
 		foreach ($event->getUsers() as $userId) {
 			$usersEventsData = array(
 				'users_id'  => $userId,
-				'events_id' => $event->getId()
+				'events_id' => $event->getId(),
+				'user_weight' => $weight[$userId]
 			);
 
 			$this->getDb()->insert('users_has_events', $usersEventsData);

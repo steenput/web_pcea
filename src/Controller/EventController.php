@@ -70,7 +70,8 @@ class EventController {
 
 			$eventForm->handleRequest($request);
 			if ($eventForm->isSubmitted() && $eventForm->isValid()) {
-				$app['dao.event']->create($event);
+				$weight = $_POST['weight'];
+				$app['dao.event']->create($event, $weight);
 				return $app->redirect('/pcea/web/event/' . $event->getId());
 			}
 			return $app['twig']->render('new_event.html.twig', array(

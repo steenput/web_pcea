@@ -5,4 +5,4 @@ require __DIR__.'/prod.php';
 
 // enable the debug mode
 $app['debug'] = true;
-$app['monolog.level'] = 'INFO';
+$app['monolog.level'] = 'DEBUG';

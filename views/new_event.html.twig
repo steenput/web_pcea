@@ -39,6 +39,7 @@
 			}}) }}
 		</div>
 	</div>
+	<div id="div_weight" class="form-group"></div>
 	<div class="form-group">
 		<div class="col-sm-offset-5 col-sm-3">
 			<input type="submit" class="btn btn-primary" value="Save" />
@@ -46,4 +47,21 @@
 	</div>
 {{ form_end(eventForm) }}
 </div>
+{% endblock %}
+
+
+{% block script %}
+
+<script type="text/javascript">
+$("#form_users")
+	.change(function() {
+		$("#div_weight").empty();
+		$("#form_users option:selected").each(function() {
+			$("#div_weight").append('<label class="col-sm-5 control-label required" for="form_weight">' + $(this).text() + '\'s weight</label>');
+			$("#div_weight").append('<div class="col-sm-4"><input id="form_weight" type="number" name="weight[' + $(this).val() + ']" value="1" min="1" />');
+		});
+	})
+	.trigger("change");
+</script>
+
 {% endblock %}
