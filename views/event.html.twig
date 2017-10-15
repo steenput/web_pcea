@@ -14,13 +14,15 @@
 		<table class="table table-bordered table-striped table-condensed">
 			<tr>
 				<th>Username</th>
-				<th>Weight</th>
-				<th>Parts</th>
+				<th>Weight in event</th>
+				<th>Really payed</th>
+				<th>Part</th>
 			</tr>
 			{% for user in event.users %}
 			<tr>
 				<td>{{ user.username }}</td>
 				<td>{{ user.weight }}</td>
+				<td>{{ reallyPayed[user.id] }}</td>
 				<td>{{ parts[user.id] }}</td>
 			</tr>
 			{% endfor %}
