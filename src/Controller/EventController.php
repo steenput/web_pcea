@@ -24,14 +24,13 @@ class EventController {
 				$grandTotal = 0;
 				
 				foreach ($spents as $spent) {
-					$spent->setPart(0);
 					$amount = floatval($spent->getAmount());
+					$spent->setPart(0);
 
 					foreach ($spent->getUsers() as $user) {
-						$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
-						$spent->setPart(round(($amount / $nbConcerned) * floatval($user->getWeight()), 2, PHP_ROUND_HALF_UP));
-						
 						if ($currentUser->getId() === $user->getId()) {
+							$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
+							$spent->setPart(round(($amount / $nbConcerned) * floatval($user->getWeight()), 2, PHP_ROUND_HALF_UP));
 							$total += $spent->getPart();
 						}
 					}
