@@ -6,18 +6,6 @@ use Pcea\Entity\Event;
 use Pcea\Entity\User;
 
 class EventDAO extends DAO {
-	public function getWeight($eventId, $userId) {
-		$sql = "SELECT user_weight FROM users_has_events WHERE events_id = ? AND users_id = ?";
-		$row = $this->getDb()->fetchAssoc($sql, array($eventId, $userId));
-
-		$w = $row['user_weight'];
-
-		if ($w)
-			return $w;
-		else
-			throw new Exception(sprintf('Event "%s" or user "%s" not found.', $eventId, $userId));
-	}
-
 	public function isAccessibleBy($eventId, $userId) {
 		$sql = "SELECT username FROM users JOIN users_has_events ON id = users_id WHERE events_id = ? AND id = ?";
 

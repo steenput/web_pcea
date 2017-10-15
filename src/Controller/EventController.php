@@ -16,23 +16,24 @@ use Pcea\Entity\Spent;
 class EventController {
 	public function eventAction($eventId, Application $app) {
 		if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
-			$user = $app['user'];
-			if ($app['dao.event']->isAccessibleBy($eventId, $user->getId())) {
+			$currentUser = $app['user'];
+			if ($app['dao.event']->isAccessibleBy($eventId, $currentUser->getId())) {
 				$event = $app['dao.event']->read($eventId);
 				$spents = $app['dao.spent']->readByEvent($eventId);
-				
 				$total = 0;
 				$grandTotal = 0;
-				$weight = floatval($app['dao.event']->getWeight($eventId, $user->getId()));
 				
 				foreach ($spents as $spent) {
 					$spent->setPart(0);
 					$amount = floatval($spent->getAmount());
 
-					if (in_array(array('username' => $user->getUsername()), $spent->getUsers())) {
+					foreach ($spent->getUsers() as $user) {
 						$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
-						$spent->setPart(round(($amount / $nbConcerned) * $weight, 2, PHP_ROUND_HALF_UP));
-						$total += $spent->getPart();
+						$spent->setPart(round(($amount / $nbConcerned) * floatval($user->getWeight()), 2, PHP_ROUND_HALF_UP));
+						
+						if ($currentUser->getId() === $user->getId()) {
+							$total += $spent->getPart();
+						}
 					}
 
 					$grandTotal += $amount;

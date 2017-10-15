@@ -4,6 +4,7 @@ namespace Pcea\DAO;
 
 use Pcea\Entity\Event;
 use Pcea\Entity\Spent;
+use Pcea\Entity\User;
 
 class SpentDAO extends DAO {
 	/**
@@ -39,16 +40,28 @@ class SpentDAO extends DAO {
 			throw new Exception(sprintf('Zero division'));
 	}
 
-	public function readByEvent($id) {
+	public function readByEvent($eventId) {
 		$sql = "SELECT * FROM spents WHERE events_id = ?";
-		$result = $this->getDb()->fetchAll($sql, array($id));
+		$result = $this->getDb()->fetchAll($sql, array($eventId));
 
 		$spents = array();
 		foreach ($result as $row) {
 			$spents[$row['id']] = $this->buildEntityObject($row);
-			$sql = "SELECT username FROM users JOIN users_has_spents ON id = users_id WHERE spents_id = ?";
-			$result = $this->getDb()->fetchAll($sql, array($row['id']));
-			$spents[$row['id']]->setUsers($result);
+			$sql = "SELECT id, username, user_weight FROM users 
+					JOIN users_has_spents ON id = users_has_spents.users_id 
+					JOIN users_has_events ON id = users_has_events.users_id 
+					WHERE spents_id = ? AND events_id = ?";
+			$dbUsers = $this->getDb()->fetchAll($sql, array($row['id'], $eventId));
+			$users = array();
+
+			foreach ($dbUsers as $u) {
+				$user = new User();
+				$user->setId($u['id']);
+				$user->setUsername($u['username']);
+				$user->setWeight($u['user_weight']);
+				$users[] = $user;
+			}
+			$spents[$row['id']]->setUsers($users);
 		}
 		return $spents;
 	}
