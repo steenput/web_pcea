@@ -21,9 +21,11 @@ class EventController {
 				$event = $app['dao.event']->read($eventId);
 				$parts = array();
 				$reallyPayed = array();
+				$situations = array();
 				foreach ($event->getUsers() as $user) {
 					$parts[$user->getId()] = 0;
 					$reallyPayed[$user->getId()] = 0;
+					$situations[$user->getId()] = 0;
 				}
 				$spents = $app['dao.spent']->readByEvent($eventId);
 				$total = 0;
@@ -40,12 +42,61 @@ class EventController {
 					}
 				}
 
+				foreach ($situations as $key => $value) {
+					$situations[$key] = $reallyPayed[$key] - $parts[$key];
+				}
+
+				$gaps = $situations;
+				$sentencies = array();
+
+				$isBalanced = false;
+				$posCursor = -1;
+				$negCursor = -1;
+				while (!$isBalanced) {
+					foreach ($gaps as $key => $value) {
+						if ($posCursor < 0 && $value > 0) {
+							$posCursor = $key;
+						}
+						if ($negCursor < 0 && $value < 0) {
+							$negCursor = $key;
+						}
+					}
+					
+					if ($posCursor >= 0 && $negCursor >= 0) {
+						$balance = $gaps[$posCursor] + $gaps[$negCursor];
+						if ($balance < 0) {
+							$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
+							$gaps[$negCursor] = $balance;
+							$gaps[$posCursor] = 0;
+							$posCursor = -1;
+						}
+						elseif ($balance > 0) {
+							$sentencies[] = $negCursor . " gives " . abs($gaps[$negCursor]) . " to " . $posCursor;
+							$gaps[$posCursor] = $balance;
+							$gaps[$negCursor] = 0;
+							$negCursor = -1;
+						}
+						else {
+							$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
+							$gaps[$posCursor] = 0;
+							$gaps[$negCursor] = 0;
+							$posCursor = -1;
+							$negCursor = -1;
+						}
+					}
+					else {
+						$isBalanced = true;
+					}
+				}
+
 				return $app['twig']->render('event.html.twig', array(
 					'spents' => $spents,
 					'event' => $event,
 					'parts' => $parts,
 					'reallyPayed' => $reallyPayed,
-					'total' => $total
+					'situations' => $situations,
+					'total' => $total,
+					'sentencies' => $sentencies
 				));
 			}
 			else {

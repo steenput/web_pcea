@@ -13,21 +13,38 @@
 		<h2>Users</h2>
 		<table class="table table-bordered table-striped table-condensed">
 			<tr>
+				<th>Id</th>
 				<th>Username</th>
 				<th>Weight in event</th>
 				<th>Really payed</th>
 				<th>Part</th>
+				<th>Situation</th>
 			</tr>
 			{% for user in event.users %}
 			<tr>
+				<td>{{ user.id }}</td>
 				<td>{{ user.username }}</td>
 				<td>{{ user.weight }}</td>
 				<td>{{ reallyPayed[user.id] }}</td>
 				<td>{{ parts[user.id] }}</td>
+				<td class="
+					{% if situations[user.id] < 0 %}
+						danger
+					{% elseif situations[user.id] > 0 %}
+						success
+					{% endif %}">
+				{{ situations[user.id] }}
+			</td>
 			</tr>
 			{% endfor %}
 		</table>
 	</div>
+</div>
+
+<div class="row">
+	{% for sent in sentencies %}
+	    <p>{{ sent }}</p>
+	{% endfor %}
 </div>
 
 <div class="row">
@@ -84,8 +101,9 @@
 <script>
 	$(function() {
 		let data = [ 
-			
-			["January", 1], ["February", -2], ["March", 4], ["April", 5], ["May", 2], ["June", 3] 
+			{% for user in event.users %}
+				["{{ user.username }}", {{ situations[user.id] }}],
+			{% endfor %}
 		];
 
 		$.plot("#placeholder", [ data ], {
