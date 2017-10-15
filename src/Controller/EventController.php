@@ -30,62 +30,63 @@ class EventController {
 				$spents = $app['dao.spent']->readByEvent($eventId);
 				$total = 0;
 				
-				foreach ($spents as $spent) {
-					$amount = floatval($spent->getAmount());
-					$total += $amount;
-
-					foreach ($spent->getUsers() as $user) {
-						if ($spent->getBuyer()->getId() === $user->getId()) {
-							$reallyPayed[$user->getId()] += $amount;
-						}
-						$parts[$user->getId()] += $user->getPart();
-					}
-				}
-
-				foreach ($situations as $key => $value) {
-					$situations[$key] = $reallyPayed[$key] - $parts[$key];
-				}
-
-				$gaps = $situations;
 				$sentencies = array();
-
-				$isBalanced = false;
-				$posCursor = -1;
-				$negCursor = -1;
-				while (!$isBalanced) {
-					foreach ($gaps as $key => $value) {
-						if ($posCursor < 0 && $value > 0) {
-							$posCursor = $key;
-						}
-						if ($negCursor < 0 && $value < 0) {
-							$negCursor = $key;
-						}
-					}
+				
+				if ($spents != null) {
 					
-					if ($posCursor >= 0 && $negCursor >= 0) {
-						$balance = $gaps[$posCursor] + $gaps[$negCursor];
-						if ($balance < 0) {
-							$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
-							$gaps[$negCursor] = $balance;
-							$gaps[$posCursor] = 0;
-							$posCursor = -1;
-						}
-						elseif ($balance > 0) {
-							$sentencies[] = $negCursor . " gives " . abs($gaps[$negCursor]) . " to " . $posCursor;
-							$gaps[$posCursor] = $balance;
-							$gaps[$negCursor] = 0;
-							$negCursor = -1;
-						}
-						else {
-							$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
-							$gaps[$posCursor] = 0;
-							$gaps[$negCursor] = 0;
-							$posCursor = -1;
-							$negCursor = -1;
+				
+					foreach ($spents as $spent) {
+						$amount = floatval($spent->getAmount());
+						$total += $amount;
+
+						foreach ($spent->getUsers() as $user) {
+							if ($spent->getBuyer()->getId() === $user->getId()) {
+								$reallyPayed[$user->getId()] += $amount;
+							}
+							$parts[$user->getId()] += $user->getPart();
 						}
 					}
-					else {
-						$isBalanced = true;
+
+					foreach ($situations as $key => $value) {
+						$situations[$key] = $reallyPayed[$key] - $parts[$key];
+					}
+
+					$gaps = $situations;
+
+					$isBalanced = false;
+					$posCursor = -1;
+					$negCursor = -1;
+					while (!$isBalanced) {
+						foreach ($gaps as $key => $value) {
+							if ($posCursor < 0 && $value > 0) {
+								$posCursor = $key;
+							}
+							if ($negCursor < 0 && $value < 0) {
+								$negCursor = $key;
+							}
+						}
+						
+						if ($posCursor >= 0 && $negCursor >= 0) {
+							$balance = $gaps[$posCursor] + $gaps[$negCursor];
+							if ($balance < 0) {
+								$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
+								$gaps[$negCursor] = $balance;
+								$gaps[$posCursor] = 0;
+								$posCursor = -1;
+							}
+							elseif ($balance > 0) {
+								$sentencies[] = $negCursor . " gives " . abs($gaps[$negCursor]) . " to " . $posCursor;
+								$gaps[$posCursor] = $balance;
+								$gaps[$negCursor] = 0;
+								$negCursor = -1;
+							}
+							else {
+								$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
+								$gaps[$posCursor] = 0;
+								$gaps[$negCursor] = 0;
+								$isBalanced = true;
+							}
+						}
 					}
 				}
 
