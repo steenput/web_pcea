@@ -71,7 +71,7 @@ class EventDAO extends DAO {
 				$user->setId($u['id']);
 				$user->setUsername($u['username']);
 				$user->setWeight($u['user_weight']);
-				$users[] = $user;
+				$users[$user->getId()] = $user;
 			}
 			$event->setUsers($users);
 

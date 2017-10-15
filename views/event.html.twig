@@ -6,60 +6,74 @@
 
 <h1>Event {{ event.name }}</h1>
 
-<div id="placeholder" style="width:600px;height:300px"></div>
+<div class="row">
+	<div class="col-xs-5" id="placeholder" style="width:600px;height:300px"></div>
 
-<h2>Spents</h2>
-<p><a href="{{ path('new_spent', { 'eventId': event.id }) }}">New spent</a></p>
-<table class="table table-bordered table-striped table-condensed">
-	<tr>
-		<th>Name</th>
-		<th>Amount</th>
-		<th>Buy date</th>
-		<th>Buyer</th>
-		<th>Concern</th>
-		<th>Your part</th>
-	</tr>
-	{% for spent in spents %}
-	<tr>
-		<td>{{ spent.name }}</td>
-		<td>{{ spent.amount }}</td>
-		<td>{{ spent.buyDate }}</td>
-		<td>{{ spent.buyer.username }}</td>
-		<td>
-			{% for user in spent.users %}
-				{% if loop.last %}
-					{{ user.username|e }}
-				{% else %}
-					{{ user.username|e }},
-				{% endif %}
+	<div class="col-xs-6">
+		<h2>Users</h2>
+		<table class="table table-bordered table-striped table-condensed">
+			<tr>
+				<th>Username</th>
+				<th>Weight</th>
+				<th>Parts</th>
+			</tr>
+			{% for user in event.users %}
+			<tr>
+				<td>{{ user.username }}</td>
+				<td>{{ user.weight }}</td>
+				<td>{{ parts[user.id] }}</td>
+			</tr>
 			{% endfor %}
-		</td>
-		<td>{{ spent.part }}</td>
-	</tr>
-	{% endfor %}
-	<tr>
-		<td><strong>Total</strong></td>
-		<td><strong>{{ grandTotal }}</strong></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td><strong>{{ total }}</strong></td>
-	</tr>
-</table>
+		</table>
+	</div>
+</div>
 
-<h2>Users</h2>
-<table class="table table-bordered table-striped table-condensed">
-	<tr>
-		<th>Username</th>
-		<th>Weight</th>
-	</tr>
-	{% for user in event.users %}
-	<tr>
-		<td>{{ user.username }}</td>
-		<td>{{ user.weight }}</td>
-	</tr>
-	{% endfor %}
-</table>
+<div class="row">
+	<h2>Spents</h2>
+	<p><a href="{{ path('new_spent', { 'eventId': event.id }) }}">New spent</a></p>
+	<table class="table table-bordered table-striped table-condensed">
+		<tr>
+			<th>Name</th>
+			<th>Amount</th>
+			<th>Buy date</th>
+			<th>Buyer</th>
+			<th>Concern</th>
+			<th>Your part</th>
+		</tr>
+		{% for spent in spents %}
+		<tr>
+			<td>{{ spent.name }}</td>
+			<td>{{ spent.amount }}</td>
+			<td>{{ spent.buyDate }}</td>
+			<td>{{ spent.buyer.username }}</td>
+			<td>
+				{% for user in spent.users %}
+					{% if loop.last %}
+						{{ user.username|e }}
+					{% else %}
+						{{ user.username|e }},
+					{% endif %}
+				{% endfor %}
+			</td>
+			<td>
+				{% if spent.users[app.user.id] is not defined %}
+					0
+				{% else %}
+					{{ spent.users[app.user.id].part }}
+				{% endif %}
+			</td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td><strong>Total</strong></td>
+			<td><strong>{{ total }}</strong></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><strong>{{ parts[app.user.id] }}</strong></td>
+		</tr>
+	</table>
+</div>
 
 {% endblock %}
 

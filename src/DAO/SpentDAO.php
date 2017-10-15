@@ -42,26 +42,29 @@ class SpentDAO extends DAO {
 
 	public function readByEvent($eventId) {
 		$sql = "SELECT * FROM spents WHERE events_id = ?";
-		$result = $this->getDb()->fetchAll($sql, array($eventId));
+		$dbSpents = $this->getDb()->fetchAll($sql, array($eventId));
 
 		$spents = array();
-		foreach ($result as $row) {
-			$spents[$row['id']] = $this->buildEntityObject($row);
+		foreach ($dbSpents as $spent) {
+			$spents[$spent['id']] = $this->buildEntityObject($spent);
 			$sql = "SELECT id, username, user_weight FROM users 
 					JOIN users_has_spents ON id = users_has_spents.users_id 
 					JOIN users_has_events ON id = users_has_events.users_id 
 					WHERE spents_id = ? AND events_id = ?";
-			$dbUsers = $this->getDb()->fetchAll($sql, array($row['id'], $eventId));
+			$dbUsers = $this->getDb()->fetchAll($sql, array($spent['id'], $eventId));
 			$users = array();
 
+			$nbConcerned = floatval($this->nbConcerned($spent['id'], $eventId));
+			
 			foreach ($dbUsers as $u) {
 				$user = new User();
 				$user->setId($u['id']);
 				$user->setUsername($u['username']);
 				$user->setWeight($u['user_weight']);
-				$users[] = $user;
+				$user->setPart(round(($spents[$spent['id']]->getAmount() / $nbConcerned) * floatval($user->getWeight()), 2, PHP_ROUND_HALF_UP));
+				$users[$user->getId()] = $user;
 			}
-			$spents[$row['id']]->setUsers($users);
+			$spents[$spent['id']]->setUsers($users);
 		}
 		return $spents;
 	}
@@ -92,35 +95,6 @@ class SpentDAO extends DAO {
 
 			$this->getDb()->insert('users_has_spents', $usersSpentsData);
 		}
-
-		return $spent;
-	}
-
-	public function read($id) {
-		$sql = "select * from spents where id=?";
-		$row = $this->getDb()->fetchAssoc($sql, array($id));
-
-		if ($row)
-			return $this->buildEntityObject($row);
-		else
-			throw new Exception(sprintf('Spent "%s" not found.', $id));
-	}
-
-	/**
-	 * Update an spent into the database.
-	 *
-	 * @param \Pcea\Entity\Spent $spent The spent to update
-	 */
-	public function update(Spent $spent) {
-		$spentData = array(
-			'name' => $spent->getName(),
-			'amount' => $spent->getAmount(),
-			'buy_date' => $spent->getBuyDate(),
-			'buyer' => $spent->getBuyer(),
-			'events_id' => $spent->getEvent()
-			);
-
-		$this->getDb()->update('spents', $spentData, array('id' => $spent->getId()));
 
 		return $spent;
 	}

@@ -19,30 +19,25 @@ class EventController {
 			$currentUser = $app['user'];
 			if ($app['dao.event']->isAccessibleBy($eventId, $currentUser->getId())) {
 				$event = $app['dao.event']->read($eventId);
+				$parts = array();
+				foreach ($event->getUsers() as $user) {
+					$parts[$user->getId()] = 0;
+				}
 				$spents = $app['dao.spent']->readByEvent($eventId);
 				$total = 0;
-				$grandTotal = 0;
 				
 				foreach ($spents as $spent) {
-					$amount = floatval($spent->getAmount());
-					$spent->setPart(0);
-
 					foreach ($spent->getUsers() as $user) {
-						if ($currentUser->getId() === $user->getId()) {
-							$nbConcerned = floatval($app['dao.spent']->nbConcerned($spent->getId(), $eventId));
-							$spent->setPart(round(($amount / $nbConcerned) * floatval($user->getWeight()), 2, PHP_ROUND_HALF_UP));
-							$total += $spent->getPart();
-						}
+						$parts[$user->getId()] += $user->getPart();
 					}
-
-					$grandTotal += $amount;
+					$total += floatval($spent->getAmount());
 				}
 
 				return $app['twig']->render('event.html.twig', array(
 					'spents' => $spents,
 					'event' => $event,
-					'total' => $total,
-					'grandTotal' => $grandTotal
+					'parts' => $parts,
+					'total' => $total
 				));
 			}
 			else {

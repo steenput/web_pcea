@@ -11,6 +11,7 @@ class User implements UserInterface {
 	private $salt;
 	private $role;
 	private $weight;
+	private $part;
 
 	public function getId() {
 		return $this->id;
@@ -88,6 +89,26 @@ class User implements UserInterface {
 	 */
 	public function setWeight($weight) {
 		$this->weight = $weight;
+		return $this;
+	}
+
+	/**
+	 * Gets the value of part
+
+	 * @return mixed
+	 */
+	public function getPart() {
+		return $this->part;
+	}
+	
+	/**
+	 * Sets the value of part
+	 *
+	 * @param mixed $part
+	 * @return self
+	 */
+	public function setPart($part) {
+		$this->part = $part;
 		return $this;
 	}
 }
