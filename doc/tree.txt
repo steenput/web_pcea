@@ -1,0 +1,42 @@
+├── app
+│   ├── app.php
+│   ├── config
+│   │   ├── dev.php
+│   │   └── prod.php
+│   └── routes.php
+├── composer.json
+├── composer.lock
+├── src
+│   ├── Controller
+│   │   ├── EventController.php
+│   │   └── IndexController.php
+│   ├── DAO
+│   │   ├── DAO.php
+│   │   ├── EventDAO.php
+│   │   ├── SpentDAO.php
+│   │   └── UserDAO.php
+│   └── Entity
+│       ├── Event.php
+│       ├── Spent.php
+│       └── User.php
+├── var
+│   └── logs
+├── vendor
+│   └── .....
+├── views
+│   ├── error.html.twig
+│   ├── event.html.twig
+│   ├── index.html.twig
+│   ├── layout.html.twig
+│   ├── new_event.html.twig
+│   └── new_spent.html.twig
+└── web
+    ├── css
+    │   └── style.css
+    ├── images
+    │   └── 404-ghost.png
+    ├── index.php
+    └── js
+        ├── jquery.flot.categories.min.js
+        └── jquery.flot.min.js
+
