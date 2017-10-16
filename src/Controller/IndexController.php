@@ -12,20 +12,11 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Pcea\Entity\User;
 
 class IndexController {
-	public function indexAction(Application $app) {
+	public function indexAction(Request $request, Application $app) {
 		if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
 			$user = $app['user'];
 			$events = $app['dao.event']->readByUser($user->getId());
 			return $app['twig']->render('index.html.twig', array('events' => $events));
-		}
-		else {
-			return $app['twig']->render('index.html.twig');
-		}
-	}
-
-	public function registerAction(Request $request, Application $app) {
-		if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
-			return $app->redirect('/pcea/web');
 		}
 		else {
 			$saltLength = 23;
@@ -55,26 +46,18 @@ class IndexController {
 					$app['dao.user']->create($user);
 				} catch (UniqueConstraintViolationException $e) {
 					$app['session']->getFlashBag()->add('error', 'Username already taken.');
-					return $app['twig']->render('register_form.html.twig', array(
-						'title' => 'New user',
+					return $app['twig']->render('index.html.twig', array(
 						'userForm' => $userForm->createView())
 					);
 				}
 
-				return $app->redirect('/pcea/web');
+				$app['session']->getFlashBag()->add('success', 'User successfully created.');
 			}
-			return $app['twig']->render('register_form.html.twig', array(
-				'title' => 'New user',
+
+			return $app['twig']->render('index.html.twig', array(
+				'error'         => $app['security.last_error']($request),
 				'userForm' => $userForm->createView())
 			);
 		}
-	}
-
-	public function loginAction(Request $request, Application $app) {
-		$app['monolog']->debug(sprintf("'%s'", $request));
-		return $app['twig']->render('login.html.twig', array(
-			'error'         => $app['security.last_error']($request),
-			'last_username' => $app['session']->get('_security.last_username'),
-		));
 	}
 }

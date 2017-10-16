@@ -1,13 +1,7 @@
 <?php
 
 // Index page
-$app->get('/', "Pcea\Controller\IndexController::indexAction")->bind('index');
-
-// Register user
-$app->match('/register', "Pcea\Controller\IndexController::registerAction")->bind('register');
-
-// Login form
-$app->get('/login', "Pcea\Controller\IndexController::loginAction")->bind('login');
+$app->match('/', "Pcea\Controller\IndexController::indexAction")->bind('index');
 
 // Event page
 $app->get('/event/{eventId}', "Pcea\Controller\EventController::eventAction")->bind('event');

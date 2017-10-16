@@ -11,6 +11,91 @@
 </div>
 {% endfor %}
 
+{% else %}
+<h2 class="text-center">Login</h2>
+{% if error %}
+<div class="alert alert-danger">
+	<strong>Login failed!</strong> {{ error }}
+</div>
+{% endif %}
+<div class="well">
+	<form class="form-signin form-horizontal" role="form" action="{{ path('login_check') }}" method="post">
+		<div class="form-group">
+			<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+			<input type="text" name="_username" value="" class="form-control" placeholder="Enter your username" required autofocus>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+				<input type="password" name="_password" class="form-control" placeholder="Enter your password" required>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+				<button type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<h2 class="text-center">Register</h2>
+{% for flashMessage in app.session.flashbag.get('success') %}
+<div class="alert alert-success">
+	{{ flashMessage }}
+</div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+<div class="alert alert-danger">
+	{{ flashMessage }}
+</div>
+{% endfor %}
+{% if form_errors(userForm.password.first) %}
+<div class="alert alert-danger">
+	{{ form_errors(userForm.password.first) }}
+</div>
+{% endif %}
+
+<div class="well">
+{{ form_start(userForm, { 'attr': {'class': 'form-horizontal'} }) }}
+	<div class="form-group">
+		{{ form_label(userForm.username, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_errors(userForm.username) }}
+			{{ form_widget(userForm.username, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		{{ form_label(userForm.password.first, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_widget(userForm.password.first, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		{{ form_label(userForm.password.second, null, { 'label_attr':  {
+			'class': 'col-sm-5 control-label'
+		}}) }}
+		<div class="col-sm-4">
+			{{ form_widget(userForm.password.second, { 'attr':  {
+				'class': 'form-control'
+			}}) }}
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-5 col-sm-3">
+			<input type="submit" class="btn btn-primary" value="Save" />
+		</div>
+	</div>
+{{ form_end(userForm) }}
+</div>
+
 {% endif %}
 
 {% endblock %}
