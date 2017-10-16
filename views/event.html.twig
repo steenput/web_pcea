@@ -7,9 +7,9 @@
 <h1>Event {{ event.name }}</h1>
 
 <div class="row">
-	<div class="col-xs-5" id="placeholder" style="width:600px;height:300px"></div>
+	<div class="col-xs-5" id="placeholder" style="width:800px;height:300px"></div>
 
-	<div class="col-xs-6">
+	<div class="col-xs-4">
 		<h2>Users</h2>
 		<table class="table table-bordered table-striped table-condensed">
 			<tr>
@@ -41,10 +41,18 @@
 	</div>
 </div>
 
+<br>
+
 <div class="row">
-	{% for sent in sentencies %}
-	    <p>{{ sent }}</p>
-	{% endfor %}
+	<h2>Equilibrium</h2>
+	<table class="table table-striped">
+		{% for debt in debts %}
+			<tr>
+				<td>{{ debt["from"] }} should pay {{ debt["to"] }}</td>
+				<td>{{ debt["howMuch"] }}</td>
+			</tr>
+		{% endfor %}
+	</table>
 </div>
 
 <div class="row">
@@ -102,22 +110,29 @@
 	$(function() {
 		let data = [ 
 			{% for user in event.users %}
-				["{{ user.username }}", {{ situations[user.id] }}],
+				{
+					data: [[{{ loop.index0 }}, {{ situations[user.id] }}]], 
+					color: {% if situations[user.id] < 0 %}"red"{% else %}"green"{% endif %}
+				},
 			{% endfor %}
 		];
 
-		$.plot("#placeholder", [ data ], {
+		$.plot("#placeholder", data, {
 			series: {
 				bars: {
 					show: true,
-					barWidth: 0.6,
+					barWidth: 0.5,
 					align: "center",
-				},
-				color: 2
+					lineWidth: 0,
+					fill: 1
+				}
 			},
 			xaxis: {
-				mode: "categories",
-				tickLength: 0
+				ticks: [
+				{% for user in event.users %}
+					[{{ loop.index0 }}, "{{ user.username }} ({{ situations[user.id] }})"],
+				{% endfor %}
+				]
 			}
 		});
 	});

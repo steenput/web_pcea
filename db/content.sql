@@ -36,6 +36,7 @@ insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Visi
 insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("VTT", 27, NOW(), 4, 1);
 insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Aquaparc", 150, NOW(), 4, 1);
 insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Fondue", 80, NOW(), 2, 1);
+insert into pcea.spents (name, amount, buy_date, buyer, events_id) values ("Hôtel", 200, NOW(), 1, 1);
 
 -- essence
 insert into pcea.users_has_spents (users_id, spents_id) values (1, 1);
@@ -90,3 +91,9 @@ insert into pcea.users_has_spents (users_id, spents_id) values (1, 10);
 insert into pcea.users_has_spents (users_id, spents_id) values (2, 10);
 insert into pcea.users_has_spents (users_id, spents_id) values (3, 10);
 insert into pcea.users_has_spents (users_id, spents_id) values (4, 10);
+
+-- hôtel
+insert into pcea.users_has_spents (users_id, spents_id) values (1, 11);
+insert into pcea.users_has_spents (users_id, spents_id) values (2, 11);
+insert into pcea.users_has_spents (users_id, spents_id) values (3, 11);
+insert into pcea.users_has_spents (users_id, spents_id) values (4, 11);

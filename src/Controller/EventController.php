@@ -19,22 +19,23 @@ class EventController {
 			$currentUser = $app['user'];
 			if ($app['dao.event']->isAccessibleBy($eventId, $currentUser->getId())) {
 				$event = $app['dao.event']->read($eventId);
+				// The parts per users are computed at select in database
+				$spents = $app['dao.spent']->readByEvent($eventId);
 				$parts = array();
 				$reallyPayed = array();
 				$situations = array();
+				$debts = array();
+				$total = 0;
+
+				// Init arrays at zero
 				foreach ($event->getUsers() as $user) {
 					$parts[$user->getId()] = 0;
 					$reallyPayed[$user->getId()] = 0;
 					$situations[$user->getId()] = 0;
 				}
-				$spents = $app['dao.spent']->readByEvent($eventId);
-				$total = 0;
 				
-				$sentencies = array();
-				
+				// If there is not spents, no need to calculate situations and debts
 				if ($spents != null) {
-					
-				
 					foreach ($spents as $spent) {
 						$amount = floatval($spent->getAmount());
 						$total += $amount;
@@ -51,12 +52,17 @@ class EventController {
 						$situations[$key] = $reallyPayed[$key] - $parts[$key];
 					}
 
+					// At this time, we have in situations the 
+					// positive or negative amount per user.
+					// The next while compute debts array
+					// to show who must pay who.
 					$gaps = $situations;
-
 					$isBalanced = false;
 					$posCursor = -1;
 					$negCursor = -1;
+
 					while (!$isBalanced) {
+						// find positive and negative values
 						foreach ($gaps as $key => $value) {
 							if ($posCursor < 0 && $value > 0) {
 								$posCursor = $key;
@@ -69,23 +75,36 @@ class EventController {
 						if ($posCursor >= 0 && $negCursor >= 0) {
 							$balance = $gaps[$posCursor] + $gaps[$negCursor];
 							if ($balance < 0) {
-								$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
+								$debts[] = array(
+									"from" => $event->getUsers()[$negCursor]->getUsername(),
+									"howMuch" => $gaps[$posCursor],
+									"to" => $event->getUsers()[$posCursor]->getUsername()
+								);
 								$gaps[$negCursor] = $balance;
 								$gaps[$posCursor] = 0;
 								$posCursor = -1;
 							}
 							elseif ($balance > 0) {
-								$sentencies[] = $negCursor . " gives " . abs($gaps[$negCursor]) . " to " . $posCursor;
+								$debts[] = array(
+									"from" => $event->getUsers()[$negCursor]->getUsername(),
+									"howMuch" => abs($gaps[$negCursor]),
+									"to" => $event->getUsers()[$posCursor]->getUsername()
+								);
 								$gaps[$posCursor] = $balance;
 								$gaps[$negCursor] = 0;
 								$negCursor = -1;
 							}
 							else {
-								$sentencies[] = $negCursor . " gives " . $gaps[$posCursor] . " to " . $posCursor;
-								$gaps[$posCursor] = 0;
-								$gaps[$negCursor] = 0;
+								$debts[] = array(
+									"from" => $event->getUsers()[$negCursor]->getUsername(),
+									"howMuch" => $gaps[$posCursor],
+									"to" => $event->getUsers()[$posCursor]->getUsername()
+								);
 								$isBalanced = true;
 							}
+						}
+						else {
+							$isBalanced = true;
 						}
 					}
 				}
@@ -97,7 +116,7 @@ class EventController {
 					'reallyPayed' => $reallyPayed,
 					'situations' => $situations,
 					'total' => $total,
-					'sentencies' => $sentencies
+					'debts' => $debts
 				));
 			}
 			else {
