@@ -83,6 +83,10 @@ class EventDAO extends DAO {
 		}
 	}
 
+	public function delete($id) {
+		$this->getDb()->delete('events', array('id' => $id));
+	}
+
 	/**
 	 * Create an Event object based on a DB row.
 	 *

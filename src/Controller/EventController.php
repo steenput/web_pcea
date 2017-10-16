@@ -181,7 +181,8 @@ class EventController {
 					->add('users', ChoiceType::class, array(
 						'choices'  => array_column($users, 'id', 'username'),
 						'expanded' => true,
-						'multiple' => true
+						'multiple' => true,
+						'data' => array_column($users, 'id', 'username')
 					))
 					->getForm();
 
@@ -203,6 +204,26 @@ class EventController {
 		}
 		else {
 			return $app->redirect('/pcea/web');
+		}
+	}
+
+	public function deleteEventAction($eventId, Application $app) {
+		if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+			$currentUser = $app['user'];
+			if ($app['dao.event']->isAccessibleBy($eventId, $currentUser->getId())) {
+				$app['dao.event']->delete($eventId);
+				return $app->redirect('/pcea/web');
+			}
+		}
+	}
+
+	public function deleteSpentAction($eventId, $spentId, Application $app) {
+		if ($app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_FULLY')) {
+			$currentUser = $app['user'];
+			if ($app['dao.event']->isAccessibleBy($eventId, $currentUser->getId())) {
+				$app['dao.spent']->delete($spentId);
+				return $app->redirect('/pcea/web/event/' . $eventId);
+			}
 		}
 	}
 }

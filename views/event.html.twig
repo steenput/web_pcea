@@ -67,6 +67,7 @@
 			<th>Buyer</th>
 			<th>Concern</th>
 			<th>Your part</th>
+			<th></th>
 		</tr>
 		{% for spent in spents %}
 		<tr>
@@ -90,6 +91,7 @@
 					{{ spent.users[app.user.id].part }}
 				{% endif %}
 			</td>
+			<td><a href="{{ path('delete_spent', { 'eventId': event.id, 'spentId': spent.id }) }}">Delete</a></td>
 		</tr>
 		{% endfor %}
 		<tr>

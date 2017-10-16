@@ -18,7 +18,7 @@
 			<td><a href="{{ path('event', { 'eventId': event.id }) }}"><strong>{{ event.name }}</strong></a></td>
 			<td>{{ event.description }}</td>
 			<td>{{ event.currency }}</td>
-			<td>Delete</td>
+			<td><a href="{{ path('delete_event', { 'eventId': event.id }) }}">Delete</a></td>
 		</tr>
 		{% endfor %}
 	</table>

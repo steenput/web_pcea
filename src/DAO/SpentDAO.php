@@ -99,6 +99,10 @@ class SpentDAO extends DAO {
 		return $spent;
 	}
 
+	public function delete($id) {
+		$this->getDb()->delete('spents', array('id' => $id));
+	}
+
 	/**
 	 * Create an Spent object based on a DB row.
 	 *
