@@ -50,24 +50,6 @@ class UserDAO extends DAO implements UserProviderInterface {
 	}
 
 	/**
-	 * Update an user into the database.
-	 *
-	 * @param \Pcea\Entity\User $user The user to update
-	 */
-	public function update(User $user) {
-		$userData = array(
-			'username' => $user->getUsername(),
-			'password' => $user->getPassword(),
-			'salt' => $user->getSalt(),
-			'role' => $user->getRole()
-			);
-
-		$this->getDb()->update('users', $userData, array('id' => $user->getId()));
-
-		return $user;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public function loadUserByUsername($username) {

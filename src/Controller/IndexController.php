@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Pcea\Entity\User;
 
 class IndexController {
@@ -49,7 +50,17 @@ class IndexController {
 				// compute the encoded password
 				$password = $app['security.encoder.bcrypt']->encodePassword($user->getPassword(), $salt);
 				$user->setPassword($password); 
-				$app['dao.user']->create($user);
+				
+				try {
+					$app['dao.user']->create($user);
+				} catch (UniqueConstraintViolationException $e) {
+					$app['session']->getFlashBag()->add('error', 'Username already taken.');
+					return $app['twig']->render('register_form.html.twig', array(
+						'title' => 'New user',
+						'userForm' => $userForm->createView())
+					);
+				}
+
 				return $app->redirect('/pcea/web');
 			}
 			return $app['twig']->render('register_form.html.twig', array(
