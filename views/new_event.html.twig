@@ -10,23 +10,19 @@
 <div class="well">
 {{ form_start(eventForm) }}
 	{{ form_row(eventForm.name) }}
-	{{ form_errors(eventForm.name) }}
 	{{ form_widget(eventForm.name) }}
 
 	{{ form_row(eventForm.description) }}
-	{{ form_errors(eventForm.description) }}
 	{{ form_widget(eventForm.description) }}
 
 	{{ form_row(eventForm.currency) }}
-	{{ form_errors(eventForm.currency) }}
 	{{ form_widget(eventForm.currency) }}
 
 	{{ form_row(eventForm.users) }}
-	{{ form_errors(eventForm.users) }}
 	{{ form_widget(eventForm.users) }}
 	
 	<div id="div_weight" class="form-group"></div>
-	
+
 	<div class="form-group">
 		<div class="col-sm-offset-5 col-sm-3">
 			<input type="submit" class="btn btn-primary" value="Save" />

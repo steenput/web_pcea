@@ -66,6 +66,9 @@ $app->error(function (\Exception $e, Request $request, $code) use ($app) {
 		case 404:
 			$message = 'The requested resource could not be found.';
 			break;
+		case 500:
+			$message = 'The server has occured an error.';
+			break;
 		default:
 			$message = "Something went wrong.";
 	}

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Pcea\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class IndexController {
 	public function indexAction(Request $request, Application $app) {

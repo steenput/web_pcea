@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CurrencyType;
 use Pcea\Entity\Event;
 use Pcea\Entity\Spent;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class EventController {
 	public function eventAction($eventId, Application $app) {
@@ -135,14 +136,24 @@ class EventController {
 			$users = $app['dao.user']->readAll();
 
 			$eventForm = $app['form.factory']->createBuilder(FormType::class, $event)
-				->add('name', TextType::class)
+				->add('name', TextType::class, array(
+					'required' => true,
+					'constraints' => array(
+						new Assert\NotBlank(), 
+						new Assert\Length(array(
+						'min' => 5,'max' => 45,
+						)))
+					)
+				)
 				->add('description', TextareaType::class)
 				->add('currency', CurrencyType::class, array(
+					'required' => true,
 					'preferred_choices' => array('CHF', 'EUR', 'USD')
 
 				))
 				->add('users', ChoiceType::class, array(
 					'choices'  => array_column($users, 'id', 'username'),
+					'required' => true,
 					'multiple' => true
 				))
 				->getForm();
@@ -170,19 +181,43 @@ class EventController {
 				$users = $app['dao.user']->readAllFromEvent($eventId);
 
 				$spentForm = $app['form.factory']->createBuilder(FormType::class, $spent)
-					->add('name', TextType::class)
-					->add('amount', NumberType::class)
+					->add('name', TextType::class, array(
+					'required' => true,
+					'constraints' => array(
+						new Assert\NotBlank(), 
+						new Assert\Length(array(
+						'min' => 5,'max' => 45,
+						))
+					)))
+					->add('amount', NumberType::class, array(
+					'required' => true,
+					'constraints' => array(
+						new Assert\NotBlank(),
+						new Assert\GreaterThan(0)
+					)))
 					->add('buyDate', DateType::class, array(
-						'input' => 'string'
+						'input' => 'string',
+						'required' => true,
+						'constraints' => array(
+							new Assert\NotBlank()
+						)
 					))
 					->add('buyer', ChoiceType::class, array(
-						'choices'  => array_column($users, 'id', 'username')
+						'choices'  => array_column($users, 'id', 'username'),
+						'required' => true,
+						'constraints' => array(
+							new Assert\NotBlank()
+						)
 					))
 					->add('users', ChoiceType::class, array(
 						'choices'  => array_column($users, 'id', 'username'),
 						'expanded' => true,
 						'multiple' => true,
-						'data' => array_column($users, 'id', 'username')
+						'data' => array_column($users, 'id', 'username'),
+						'required' => true,
+						'constraints' => array(
+							new Assert\NotBlank()
+						)
 					))
 					->getForm();
 
