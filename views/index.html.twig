@@ -5,11 +5,23 @@
 {% block content %}
 
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-{% for event in events %}
-<div class="col-sm-5">
-	<h2><a href="{{ path('event', { 'eventId': event.id }) }}">{{ event.name }} (in {{ event.currency }})</a></h2>
-</div>
-{% endfor %}
+<h2>Events</h2>
+	<table class="table table-bordered table-striped table-condensed">
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Currency</th>
+			<th></th>
+		</tr>
+		{% for event in events %}
+		<tr>
+			<td><a href="{{ path('event', { 'eventId': event.id }) }}"><strong>{{ event.name }}</strong></a></td>
+			<td>{{ event.description }}</td>
+			<td>{{ event.currency }}</td>
+			<td>Delete</td>
+		</tr>
+		{% endfor %}
+	</table>
 
 {% else %}
 <h2 class="text-center">Login</h2>

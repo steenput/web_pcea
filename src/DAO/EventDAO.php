@@ -36,6 +36,7 @@ class EventDAO extends DAO {
 	public function create(Event $event, $weight) {
 		$eventData = array(
 			'name' => $event->getName(),
+			'description' => $event->getDescription(),
 			'currency' => $event->getCurrency()
 			);
 
@@ -83,31 +84,6 @@ class EventDAO extends DAO {
 	}
 
 	/**
-	 * Update an event into the database.
-	 *
-	 * @param \Pcea\Entity\Event $event The event to update
-	 */
-	public function update(Event $event) {
-		$eventData = array(
-			'name' => $event->getName(),
-			'currency' => $event->getCurrency()
-			);
-
-		$this->getDb()->update('events', $eventData, array('id' => $event->getId()));
-
-		foreach ($event->getUsers() as $userId) {
-			$usersEventsData = array(
-				'users_id'  => $userId,
-				'events_id' => $event->getId()
-			);
-
-			$this->getDb()->update('users_has_events', $usersEventsData);
-		}
-
-		return $event;
-	}
-
-	/**
 	 * Create an Event object based on a DB row.
 	 *
 	 * @param array $row The DB row containing Event data.
@@ -117,6 +93,7 @@ class EventDAO extends DAO {
 		$event = new Event();
 		$event->setId($row['id']);
 		$event->setName($row['name']);
+		$event->setDescription($row['description']);
 		$event->setCurrency($row['currency']);
 		return $event;
 	}

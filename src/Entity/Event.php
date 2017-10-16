@@ -5,6 +5,7 @@ namespace Pcea\Entity;
 class Event {
 	private $id;
 	private $name;
+	private $description;
 	private $currency;
 	private $users;
 
@@ -79,6 +80,26 @@ class Event {
 	 */
 	public function setUsers($users) {
 		$this->users = $users;
+		return $this;
+	}
+
+	/**
+	 * Gets the value of description
+
+	 * @return mixed
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+	
+	/**
+	 * Sets the value of description
+	 *
+	 * @param mixed $description
+	 * @return self
+	 */
+	public function setDescription($description) {
+		$this->description = $description;
 		return $this;
 	}
 }

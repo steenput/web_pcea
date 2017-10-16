@@ -5,6 +5,7 @@
 {% block content %}
 
 <h1>Event {{ event.name }}</h1>
+<h3>{{ event.description }}</h3>
 
 <div class="row">
 	<div class="col-xs-5" id="placeholder" style="width:800px;height:300px"></div>
@@ -34,7 +35,7 @@
 						success
 					{% endif %}">
 				{{ situations[user.id] }}
-			</td>
+				</td>
 			</tr>
 			{% endfor %}
 		</table>
@@ -57,7 +58,7 @@
 
 <div class="row">
 	<h2>Spents</h2>
-	<p><a href="{{ path('new_spent', { 'eventId': event.id }) }}">New spent</a></p>
+	<p><a class="btn btn-primary" href="{{ path('new_spent', { 'eventId': event.id }) }}">New spent</a></p>
 	<table class="table table-bordered table-striped table-condensed">
 		<tr>
 			<th>Name</th>

@@ -11,9 +11,9 @@ insert into pcea.users (username, password, salt, role) values ("max", '$2y$13$F
 insert into pcea.users (username, password, salt, role) values ("jean", '$2y$13$F9v8pl5u5WMrCorP9MLyJeyIsOLj.0/xqKd/hqa5440kyeB7FQ8te', 'YcM=A$nsYzkyeDVjEUa7W9K', 'ROLE_USER');
 insert into pcea.users (username, password, salt, role) values ("fred", '$2y$13$F9v8pl5u5WMrCorP9MLyJeyIsOLj.0/xqKd/hqa5440kyeB7FQ8te', 'YcM=A$nsYzkyeDVjEUa7W9K', 'ROLE_USER');
 
-insert into pcea.events (name, currency) values ("Weekend montagne", "CHF");
-insert into pcea.events (name, currency) values ("Restaurant", "CHF");
-insert into pcea.events (name, currency) values ("Weekend à la mer", "CHF");
+insert into pcea.events (name, currency, description) values ("Weekend montagne", "CHF", "Very cool");
+insert into pcea.events (name, currency, description) values ("Restaurant", "CHF", "Very cool");
+insert into pcea.events (name, currency, description) values ("Weekend à la mer", "CHF", "Very cool");
 
 insert into pcea.users_has_events (users_id, events_id, user_weight) values (1, 1, 1);
 insert into pcea.users_has_events (users_id, events_id, user_weight) values (2, 1, 1);

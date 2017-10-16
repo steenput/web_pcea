@@ -6,6 +6,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -135,6 +136,7 @@ class EventController {
 
 			$eventForm = $app['form.factory']->createBuilder(FormType::class, $event)
 				->add('name', TextType::class)
+				->add('description', TextareaType::class)
 				->add('currency', CurrencyType::class, array(
 					'preferred_choices' => array('CHF', 'EUR', 'USD')
 
