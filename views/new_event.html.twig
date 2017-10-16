@@ -1,56 +1,32 @@
 {% extends 'layout.html.twig' %}
-
+{% form_theme eventForm 'bootstrap_3_horizontal_layout.html.twig' %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <h2 class="text-center">{{ block('title') }}</h2>
 
 
+
 <div class="well">
-{{ form_start(eventForm, { 'attr': {'class': 'form-horizontal'} }) }}
-	<div class="form-group">
-		{{ form_label(eventForm.name, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_errors(eventForm.name) }}
-			{{ form_widget(eventForm.name, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(eventForm.description, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_errors(eventForm.description) }}
-			{{ form_widget(eventForm.description, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(eventForm.currency, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_widget(eventForm.currency, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(eventForm.users, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_widget(eventForm.users, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
+{{ form_start(eventForm) }}
+	{{ form_row(eventForm.name) }}
+	{{ form_errors(eventForm.name) }}
+	{{ form_widget(eventForm.name) }}
+
+	{{ form_row(eventForm.description) }}
+	{{ form_errors(eventForm.description) }}
+	{{ form_widget(eventForm.description) }}
+
+	{{ form_row(eventForm.currency) }}
+	{{ form_errors(eventForm.currency) }}
+	{{ form_widget(eventForm.currency) }}
+
+	{{ form_row(eventForm.users) }}
+	{{ form_errors(eventForm.users) }}
+	{{ form_widget(eventForm.users) }}
+	
 	<div id="div_weight" class="form-group"></div>
+	
 	<div class="form-group">
 		<div class="col-sm-offset-5 col-sm-3">
 			<input type="submit" class="btn btn-primary" value="Save" />

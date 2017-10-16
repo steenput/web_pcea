@@ -1,5 +1,5 @@
 {% extends 'layout.html.twig' %}
-
+{% form_theme spentForm 'bootstrap_3_horizontal_layout.html.twig' %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
@@ -8,60 +8,27 @@
 <p><a href="{{ path('event', { 'eventId': eventId }) }}">Return to event</a></p>
 
 <div class="well">
-{{ form_start(spentForm, { 'attr': {'class': 'form-horizontal'} }) }}
-	<div class="form-group">
-		{{ form_label(spentForm.name, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_errors(spentForm.name) }}
-			{{ form_widget(spentForm.name, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(spentForm.amount, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_errors(spentForm.amount) }}
-			{{ form_widget(spentForm.amount, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(spentForm.buyDate, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_errors(spentForm.buyDate) }}
-			{{ form_widget(spentForm.buyDate, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(spentForm.buyer, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_widget(spentForm.buyer, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
-	<div class="form-group">
-		{{ form_label(spentForm.users, null, { 'label_attr':  {
-			'class': 'col-sm-5 control-label'
-		}}) }}
-		<div class="col-sm-4">
-			{{ form_widget(spentForm.users, { 'attr':  {
-				'class': 'form-control'
-			}}) }}
-		</div>
-	</div>
+{{ form_start(spentForm) }}
+	{{ form_row(spentForm.name) }}
+	{{ form_errors(spentForm.name) }}
+	{{ form_widget(spentForm.name) }}
+
+	{{ form_row(spentForm.amount) }}
+	{{ form_errors(spentForm.amount) }}
+	{{ form_widget(spentForm.amount) }}
+
+	{{ form_row(spentForm.buyDate) }}
+	{{ form_errors(spentForm.buyDate) }}
+	{{ form_widget(spentForm.buyDate) }}
+
+	{{ form_row(spentForm.buyer) }}
+	{{ form_errors(spentForm.buyer) }}
+	{{ form_widget(spentForm.buyer) }}
+
+	{{ form_row(spentForm.users) }}
+	{{ form_errors(spentForm.users) }}
+	{{ form_widget(spentForm.users) }}
+
 	<div class="form-group">
 		<div class="col-sm-offset-5 col-sm-3">
 			<input type="submit" class="btn btn-primary" value="Save" />
