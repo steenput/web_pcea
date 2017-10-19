@@ -3,7 +3,7 @@
 \renewcommand\familydefault{\sfdefault}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[left=2cm,top=2cm,right=2cm,bottom=2cm]{geometry}
+\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}
 \usepackage{graphicx}
 \usepackage{minted}
 \usemintedstyle{colorful}
@@ -28,10 +28,19 @@
 \affil{\small Hepia ITI 3\up{ème} année} 
 \maketitle
 
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=1.0\textwidth]{intro.png}
+	\end{center}
+\end{figure}
+\newpage
+
 \tableofcontents 
 \listoffigures
 \renewcommand\listoflistingscaption{Table des listings de code source}
 \listoflistings
+
+\newpage
 
 \section{Introduction}
 \subsection{Description}
@@ -53,13 +62,14 @@ personnes du groupe d’amis.
 	\begin{itemize}
 		\item \href{https://httpd.apache.org/}{Apache}, serveur HTTP
 		\item \href{http://php.net/}{PHP}, avec
-		\item \href{https://silex.symfony.com/}{Silex}, micro framework PHP basé entre autres sur \href{https://symfony.com/}{Symfony}
+		\item \href{https://silex.symfony.com/}{Silex}, micro framework PHP basé entre autres sur \href{https://symfony.com/}{Symfony}, déployé avec \href{https://getcomposer.org/}{Composer}
+		\item \href{https://twig.symfony.com/}{Twig}, moteur de templates pour PHP (utilisé de concert avec Silex)
 	\end{itemize}
 	\item Front-end :
 	\begin{itemize}
-		\item \href{https://twig.symfony.com/}{Twig}, moteur de templates pour PHP (utilisé de concert avec Silex)
-		\item \href{https://jquery.org/}{jQuery}
 		\item \href{http://getbootstrap.com/}{Bootstrap} pour le design en CSS
+		\item \href{https://jquery.org/}{jQuery}
+		\item \href{http://www.flotcharts.org/}{Flot}, un plugin pour dessiner des graphiques avec jQuery
 	\end{itemize}
 \end{itemize}
 
@@ -90,10 +100,11 @@ d'être simple à comprendre et à maintenir.
 
 \section{Back-end}
 Je profite également de ce TP pour appréhender Silex, un micro framework PHP dérivé de Symfony (que j'ai eu 
-l'occasion de tester), beaucoup plus léger que son grand frère mais tout de même robuste et modulaire. Il bénéficie 
-d'un grand nombre de modules à ajouter, en vrac : système de templates, connexion à la base de données, routes, etc.
+l'occasion de tester), beaucoup plus léger que son grand frère mais tout de même robuste et modulaire. Il 
+bénéficie d'un grand nombre de modules à ajouter, en vrac : système de templates, connexion à la base de données, 
+routes, etc.
 
-\subsection{Architecture MVC}
+\subsection{Architecture MVC avec Silex}
 Grâce à Silex, mon architecture respecte le design pattern \href{https://en.wikipedia.org/wiki/Model-view-controller}{MVC}.
 Voici l'arborescence du site :
 \begin{figure}
@@ -103,13 +114,42 @@ Voici l'arborescence du site :
 	\caption{Arborescence du site}
 \end{figure}
 
+\begin{itemize}
+	\item app : fichiers de config et routes
+	\item composer.json : fichier de dépendances
+	\item src : fichiers source PHP ("POPO", DAO, Contrôleurs)
+	\item var : logs
+	\item vendor : fichiers sources des composants Silex/Symfony
+	\item views : fichiers de vues en Twig
+	\item web : fichiers CSS, JS, images, etc. publics livrés au client
+\end{itemize}
+
+\subsection{Routage et configuration}
+Dans le dossier \mintinline{text}{app} se trouvent les fichiers de configuration (pour MySQL notamment) et les 
+déclarations/configurations des modules et composants récupérés grâce à Composer (dans \mintinline{php}{app.php}).
+Le point d'entrée du site est \mintinline{text}{web/index.php}. C'est le contrôleur frontal, c'est par ici que 
+toutes les requêtes passent (grâce au fichier de configuration d'Apache \mintinline{text}{.htaccess}). 
+Il instancie l'objet principal \mintinline{php}{$app} et fait suivre aux fichier de routes. Silex permet de 
+définir des routes, c'est-à-dire des points d'entrée dans l'application. À chaque route est associée une action 
+(requête GET et/ou POST) définie dans un contrôleur. Pour ce site, j'ai défini 6 routes : page d'accueil (avec 
+formulaires de connexion et d'inscription), page d'un événement, nouvel événement, nouvel dépense, suppression 
+d'événement et suppression de dépense.
+
+\subsection{Contrôleurs}
+Les contrôleurs sont le socle de ce site, c'est ici que sont récupérées les requêtes et les données (grâce aux 
+DAO) et construits les formulaires et les vues.
+
+\subsection{Modèles, accès aux données}
+\subsection{Vues}
 
 \section{Front-end}
-
+\subsection{CSS avec Bootstrap}
+\subsection{jQuery et Flot}
 
 
 \section{Conclusion}
 \subsection{État actuel du projet}
+Toutes les fonctionnalités demandées sont implémentées, pas de bugs connus.
 
 \subsection{Propositions d'améliorations}
 \begin{itemize}

@@ -14,7 +14,6 @@
 		<h2>Users</h2>
 		<table class="table table-bordered table-striped table-condensed">
 			<tr>
-				<th>Id</th>
 				<th>Username</th>
 				<th>Weight in event</th>
 				<th>Really payed</th>
@@ -23,7 +22,6 @@
 			</tr>
 			{% for user in event.users %}
 			<tr>
-				<td>{{ user.id }}</td>
 				<td>{{ user.username }}</td>
 				<td>{{ user.weight }}</td>
 				<td>{{ reallyPayed[user.id] }}</td>
@@ -109,6 +107,8 @@
 
 
 {% block script %}
+<script src="{{ asset('/js/jquery.flot.min.js') }}"></script>
+
 <script>
 	$(function() {
 		let data = [ 
