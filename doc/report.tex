@@ -20,6 +20,8 @@
 	urlcolor=blue
 }
 
+\usepackage{mdframed}
+
 \begin{document}
 
 \title{Petits comptes entre amis} 
@@ -37,8 +39,6 @@
 
 \tableofcontents 
 \listoffigures
-\renewcommand\listoflistingscaption{Table des listings de code source}
-\listoflistings
 
 \newpage
 
@@ -104,15 +104,24 @@ l'occasion de tester), beaucoup plus léger que son grand frère mais tout de m�
 bénéficie d'un grand nombre de modules à ajouter, en vrac : système de templates, connexion à la base de données, 
 routes, etc.
 
+\newpage
+
 \subsection{Architecture MVC avec Silex}
 Grâce à Silex, mon architecture respecte le design pattern \href{https://en.wikipedia.org/wiki/Model-view-controller}{MVC}.
+On peut configurer Silex pour que le code source, défini dans le répertoire \mintinline{text}{src}, soit ajouté 
+au mécanisme de chargement automatique (autoloading) géré par Composer. Pour que cela fonctionne, il faut que le code 
+source respecte le standard \href{http://www.php-fig.org/psr/psr-4/}{PSR-4}.
 Voici l'arborescence du site :
-\begin{figure}
-	\begin{center}
-		\includegraphics[width=0.5\textwidth]{tree.png}
-	\end{center}
-	\caption{Arborescence du site}
-\end{figure}
+\begin{mdframed}[linecolor=black, topline=true, bottomline=true, leftline=true, rightline=true]
+	\inputminted[breaklines,breaksymbol=,linenos,stepnumber=5,tabsize=2]{php}{tree.txt}
+	\label{tree}
+\end{mdframed}
+% \begin{figure}
+% 	\begin{center}
+% 		\includegraphics[width=0.5\textwidth]{tree.png}
+% 	\end{center}
+% 	\caption{Arborescence du site}
+% \end{figure}
 
 \begin{itemize}
 	\item app : fichiers de config et routes
@@ -124,9 +133,20 @@ Voici l'arborescence du site :
 	\item web : fichiers CSS, JS, images, etc. publics livrés au client
 \end{itemize}
 
+\subsection{Composants Silex}
+Silex fournit plusieurs composants vraiment pratiques et très efficaces. Les composants suivants m'ont été 
+particulièrement utiles :
+\begin{itemize}
+	\item Un composant de sécurité qui gère le login des utilisateurs
+	\item Un composant de construction de formulaires
+	\item Un composant pour se connecter à la base de données
+	\item Un composant de rendu de templates (Twig)
+	\item Un composant permettant de facilement appliquer des contraintes pour valider les données
+\end{itemize}
+
 \subsection{Routage et configuration}
 Dans le dossier \mintinline{text}{app} se trouvent les fichiers de configuration (pour MySQL notamment) et les 
-déclarations/configurations des modules et composants récupérés grâce à Composer (dans \mintinline{php}{app.php}).
+déclarations/configurations des modules et composants récupérés grâce à Composer (dans \mintinline{php}{app/app.php}).
 Le point d'entrée du site est \mintinline{text}{web/index.php}. C'est le contrôleur frontal, c'est par ici que 
 toutes les requêtes passent (grâce au fichier de configuration d'Apache \mintinline{text}{.htaccess}). 
 Il instancie l'objet principal \mintinline{php}{$app} et fait suivre aux fichier de routes. Silex permet de 
@@ -137,14 +157,51 @@ d'événement et suppression de dépense.
 
 \subsection{Contrôleurs}
 Les contrôleurs sont le socle de ce site, c'est ici que sont récupérées les requêtes et les données (grâce aux 
-DAO) et construits les formulaires et les vues.
+DAO) et construits les formulaires et les vues. Une fonction \mintinline{php}{xxxAction()} d'un contrôleur a 
+pratiquement toujours la forme suivante : test si la page est accessible par le client qui la demande, récupération 
+des données (voir la sous-section \ref{data_model_access}), si besoin construction/vérification 
+des formulaires et enfin rendu de la vue ou redirection vers une page donnée.
+
+\subsubsection{\mintinline{php}{IndexController.php}}
+Ce contrôleur gère les actions de la page principale. Si un utilisateur est connecté, il lui affiche les 
+événements auxquels ils participe. Sinon, deux formulaires, de login et d'inscription, sont affichés. Grâce au 
+composant de sécurité intégré, j'ai facilement pu mettre en place le login utilisateur. Il m'a suffit de 
+configurer quelques réglages dans \mintinline{php}{app/app.php} : la route du formulaire de login et celle de la 
+vérification du login (automatiquement faite), si les clients anonymes peuvent accéder à la page principale, 
+la provenance des données utilisateurs, etc. : 
+% (voir listing \ref{config_login}). 
+% \begin{listing}[ht]
+\begin{mdframed}[linecolor=black, topline=true, bottomline=true, leftline=true, rightline=true]
+	\inputminted[breaklines,breaksymbol=,linenos,stepnumber=5,tabsize=2,firstline=26,lastline=39]{php}{../app/app.php}
+	\label{config_login}
+\end{mdframed}
+	% \caption{Configuration du login utilisateur - \mintinline{php}{app/app.php}}
+% \end{listing}
+
+Si l'utilisateur s'inscrit, 
+son formulaire est construit grâce au composant Silex, et lorsqu'il est reçu valide et conforme en retour, son 
+mot de passe est hashé et le nouvel utilisateur est inscrit en base de données :
+% (voir listing \ref{controller_register}).
+
+% \begin{listing}[ht]
+\begin{mdframed}[linecolor=black, topline=true, bottomline=true, leftline=true, rightline=true]
+	\inputminted[breaklines,breaksymbol=,linenos,stepnumber=5,tabsize=2,firstline=22,lastline=56]{php}{../src/Controller/IndexController.php}
+	\label{controller_register}
+\end{mdframed}
+	% \caption{Inscription d'un utilisateur - \mintinline{php}{src/Controller/IndexController.php}}
+% \end{listing}
+
+\subsubsection{\mintinline{php}{EventController.php}}
+Ce contrôleur gère les actions des pages des événements et des dépenses. 
 
 \subsection{Modèles, accès aux données}
+\label{data_model_access}
+
 \subsection{Vues}
 
 \section{Front-end}
 \subsection{CSS avec Bootstrap}
-\subsection{jQuery et Flot}
+\subsection{jQuery et Flot JS}
 
 
 \section{Conclusion}

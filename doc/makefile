@@ -2,7 +2,7 @@ REPORT=report
 
 all: $(REPORT).pdf mostlyclean
 
-$(REPORT).pdf: $(REPORT).tex *.png
+$(REPORT).pdf: $(REPORT).tex *.txt *.png ../app/* ../db/* ../src/* ../views/* ../web/* ../composer.json
 	xelatex -shell-escape $(REPORT).tex
 	xelatex -shell-escape $(REPORT).tex
 

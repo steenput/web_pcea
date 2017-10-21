@@ -22,6 +22,8 @@ $app->register(new Silex\Provider\AssetServiceProvider(), array(
 	'assets.version' => 'v1'
 ));
 $app->register(new Silex\Provider\SessionServiceProvider());
+
+// For login of users
 $app->register(new Silex\Provider\SecurityServiceProvider(), array(
 	'security.firewalls' => array(
 		'secured' => array(
@@ -44,7 +46,7 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 	'monolog.level' => $app['monolog.level']
 ));
 
-// Register services.
+// Register dao services.
 $app['dao.user'] = function ($app) {
 	return new Pcea\DAO\UserDAO($app['db']);
 };
@@ -58,6 +60,7 @@ $app['dao.spent'] = function ($app) {
 	return $spentDAO;
 };
 
+// Manage pages not found/not accessible, etc.
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
 	switch ($code) {
 		case 403:
