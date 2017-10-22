@@ -3,7 +3,7 @@
 \renewcommand\familydefault{\sfdefault}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[left=2.5cm,top=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[left=2.4cm,top=2.4cm,right=2.4cm,bottom=2.4cm]{geometry}
 \usepackage{graphicx}
 \usepackage{minted}
 \usemintedstyle{colorful}
@@ -47,12 +47,12 @@
 
 \section{Introduction}
 \subsection{Description}
-Le but de ce mini-projet est de réaliser un site en php permettant à des amis de noter et
+Le but de ce mini-projet est de réaliser un site en PHP permettant à des amis de noter et
 partager les dépenses effectuées par et pour le groupe au cours de vacances
-communes. Lorsque l’une des personnes fait des courses, par exemple, elle l’enregistre.
+communes. Lorsque l'une des personnes fait des courses, par exemple, elle l'enregistre.
 Chacun enregistre les dépenses qui concernent le groupe. Ainsi, à la fin du séjour (ou à
 tout moment) on peut savoir qui a payé quoi et surtout ce que chacun doit aux autres
-personnes du groupe d’amis.
+personnes du groupe d'amis.
 
 \subsection{Technologies utilisées}
 \begin{itemize}
@@ -76,14 +76,24 @@ personnes du groupe d’amis.
 	\end{itemize}
 \end{itemize}
 
+\subsection{Déploiement du site}
+Les fichiers du site sonts disponibles ici : \url{https://github.com/steenput/web_pcea}
+Pour déployer le site, il faut commencer par avoir Apache, PHP et MySQL installés. Pour créer la base de données 
+et les tables il suffit d'exécuter \mintinline{text}{db/schema.sql} dans MySQL. Du contenu pour tester est 
+présent dans \mintinline{text}{db/content.sql}. Il est également nécessaire d'adapter la configuration dans 
+\mintinline{text}{app/config/prod.php}. Il faut ensuite, dans un terminal, se déplacer à la racine du site 
+(dans le dossier Apache ou autres) et, avec Composer installé, exécuter \mintinline{shell}{composer install}. 
+Toutes les dépendances du projet vont automatiquement s'ajouter dans le dossier \mintinline{text}{vendor}.
+Il faut donner les bons droits au fichier \mintinline{text}{var/logs/pcea.log} pour que le composant de 
+logs (Monolog) puisse y écrirer dedans. À noter que les droits administrateurs seront sûrement demandés. 
+Enfin, il est nécessaire d'avoir une connexion à internet (Bootstrap et jQuery sont appelés grâce à des CDN).
 
 \section{Base de données}
 Les technologies imposées pour la base de données de ce travail pratique sont SQLite ou MySQL. J'ai choisi 
 d'utiliser MySQL, car je suis familier avec. J'ai profité de cette occasion pour découvrir et utiliser Workbench, 
 un programme permettant de modéliser les tables et relations d'une base de données de manière graphique. Une fois 
 le model terminé, Workbench offre la possibilité de l'exporter en instructions SQL (création de tables et 
-contraintes). Pour créer la base de données et les tables il suffit d'exécuter \mintinline{text}{db/schema.sql} 
-dans MySQL. Il est également nécessaire d'adapter la configuration dans \mintinline{text}{app/config/prod.php}.
+contraintes).
 \bigbreak
 
 Mon schéma est constitué des tables suivantes :
@@ -96,8 +106,8 @@ Mon schéma est constitué des tables suivantes :
 Il y a 3 tables principales : les utilisateurs, les événements et les dépenses. 2 autres tables secondaires 
 font la liaison entre les utilisateurs et les événements et les utilisateurs et les dépenses respectivement 
 (liaison Many-To-Many). La table des utilisateurs possède un champ \mintinline{sql}{salt} et un autre 
-\mintinline{sql}{role}, ils sont nécessaires au fonctionnement de Silex (explications plus loin). Le poids 
-de chaque utilisateur au sein d'un événement est indiqué dans la table croisée 
+\mintinline{sql}{role}, ils sont nécessaires au fonctionnement de Silex (voir listing \ref{controller_register}). 
+Le poids de chaque utilisateur au sein d'un événement est indiqué dans la table croisée 
 \mintinline{sql}{users_has_events}. 
 Chaque dépense référence l'acheteur (dans \mintinline{sql}{users}) et l'événement lié (dans \mintinline{sql}
 {events}). Ce schéma représente l'interface minimum pour les données de ce travail, mais il a l'avantage 
@@ -122,7 +132,7 @@ Voici l'arborescence du site :
 	\caption{Arborescence du site}
 	\label{tree}
 \end{code}
-
+\newpage
 \begin{itemize}
 	\item app : fichiers de config et routes
 	\item composer.json : fichier de dépendances
@@ -152,15 +162,35 @@ toutes les requêtes passent (grâce au fichier de configuration d'Apache \minti
 Il instancie l'objet principal \mintinline{php}{$app} et fait suivre aux fichier de routes. Silex permet de 
 définir des routes, c'est-à-dire des points d'entrée dans l'application. À chaque route est associée une action 
 (requête GET et/ou POST) définie dans un contrôleur. Pour ce site, j'ai défini 6 routes : page d'accueil (avec 
-formulaires de connexion et d'inscription), page d'un événement, nouvel événement, nouvel dépense, suppression 
+formulaires de connexion et d'inscription), page d'un événement, nouvel événement, nouvelle dépense, suppression 
 d'événement et suppression de dépense.
+
+\subsection{Modèles, accès aux données}
+\label{data_model_access}
+L'accès aux données avec Silex/Symfony se fait généralement avec l'ORM 
+\href{http://docs.doctrine-project.org/en/latest/}{Doctrine} (l'utilisation de base est semblable à PDO PHP) 
+selon le modèle Data Access Object (DAO). 
+Tout ce qui touche cet accès se trouve dans les classes \mintinline{php}{src/DAO/xxxDAO.php}, avec pour chaque 
+fichier les requêtes traitant avec la table du même nom. La classe \mintinline{php}{src/DAO/UserDAO.php} a une 
+contrainte supplémentaire, elle implémente l'interface \mintinline{php}{UserProviderInterface} nécessaire au 
+fonctionnement du module de sécurité/login des utilisateurs. Pour les besoins de la construction des formulaires, 
+des vues et pour un code plus modulaire, chaque table est représentée par un 
+"\href{https://en.wikipedia.org/wiki/Plain_old_Java_object}{POPO}", un simple objet PHP avec attributs et 
+accesseurs. Voici par exemple l'insertion d'un nouvel événement en base de données (voir listing 
+\ref{insert_event}) :
+\newpage
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=36,lastline=58]{php}{../src/DAO/EventDAO.php}
+	\caption{Insertion d'un événement - \mintinline{php}{src/DAO/EventDAO.php}}
+	\label{insert_event}
+\end{code}
 
 \subsection{Contrôleurs}
 Les contrôleurs sont le socle de ce site, c'est ici que sont récupérées les requêtes et les données (grâce aux 
 DAO) et construits les formulaires et les vues. Une fonction \mintinline{php}{xxxAction()} d'un contrôleur a 
-pratiquement toujours la forme suivante : test si la page est accessible par le client qui la demande, récupération 
-des données (voir la sous-section \ref{data_model_access}), si besoin construction/vérification 
-des formulaires et enfin rendu de la vue ou redirection vers une page donnée.
+pratiquement toujours la forme suivante : test si la page est accessible par le client qui la demande, 
+récupération des données (voir la sous-section \ref{data_model_access}), si besoin 
+construction/vérification/validation des formulaires et enfin rendu de la vue ou redirection vers une page donnée.
 
 \subsubsection{\mintinline{php}{IndexController.php}}
 Ce contrôleur gère les actions de la page principale. Si un utilisateur est connecté, il lui affiche les 
@@ -177,8 +207,8 @@ la provenance des données utilisateurs, etc. (voir listing \ref{config_login}) 
 \bigbreak
 
 Si l'utilisateur s'inscrit, 
-son formulaire est construit grâce au composant Silex, et lorsqu'il est reçu valide et conforme en retour, son 
-mot de passe est hashé et le nouvel utilisateur est inscrit en base de données (voir listing 
+son formulaire est construit grâce au composant Silex dédié, et lorsqu'il est reçu valide et conforme en retour, 
+son mot de passe est chiffré avec bcrypt et le nouvel utilisateur est inscrit en base de données (voir listing 
 \ref{controller_register}) :
 \begin{code}
 	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=22,lastline=56]{php}{../src/Controller/IndexController.php}
@@ -190,32 +220,14 @@ mot de passe est hashé et le nouvel utilisateur est inscrit en base de données
 Ce contrôleur gère les actions des pages des événements et des dépenses. Les actions de créer et supprimer 
 dépenses et événements sont semblables, le formulaire est créé, envoyé au client, au retour il est vérifié 
 et si tout est en ordre on enregistre la nouvelle entrée en base de données. L'action d'afficher l'événement 
-avec ses dépenses et l'équilibre est un peu plus longue. Je commence par effectuer un tableau des parts que 
+avec ses dépenses et l'équilibre est un peu plus longue. Je commence par effectuer un tableau des parts de 
 chaque membre puis je calcule la situation pour chacun (positive ou négative) et finalement, en parcourant 
-plusieurs fois le tableau des situations je une manière de créer l'équilibre (savoir qui doit combien à qui) 
+plusieurs fois le tableau des situations j'envoie une manière de créer l'équilibre (savoir qui doit combien à qui) 
 (voir listing \ref{controller_equilibrium}) :
 \begin{code}
 	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=57,lastline=111]{php}{../src/Controller/EventController.php}
 	\caption{Calcul de l'équilibre - \mintinline{php}{src/Controller/EventController.php}}
 	\label{controller_equilibrium}
-\end{code}
-
-\subsection{Modèles, accès aux données}
-\label{data_model_access}
-L'accès aux données avec Silex/Symfony se fait généralement avec l'ORM 
-\href{http://docs.doctrine-project.org/en/latest/}{Doctrine} (l'utilisation de base est semblable à PDO PHP). 
-Tout ce qui touche cet accès se trouve dans les classes \mintinline{php}{src/DAO/xxxDAO.php}, avec pour chaque 
-fichier les requêtes traitant avec la table du même nom. La classe \mintinline{php}{src/DAO/UserDAO.php} a une 
-contrainte supplémentaire, elle implémente l'interface \mintinline{php}{UserProviderInterface} nécessaire au 
-fonctionnement du module de sécurité/login des utilisateurs. Pour les besoins de la construction des formulaires, 
-des vues et pour un code plus modulaire, chaque table est représentée par un 
-"\href{https://en.wikipedia.org/wiki/Plain_old_Java_object}{POPO}", un simple objet PHP avec attributs et 
-accesseurs. Voici par exemple l'insertion d'un nouvel événement en base de données (voir listing 
-\ref{insert_event}) :
-\begin{code}
-	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=36,lastline=58]{php}{../src/DAO/EventDAO.php}
-	\caption{Insert d'un événement - \mintinline{php}{src/DAO/EventDAO.php}}
-	\label{insert_event}
 \end{code}
 
 \subsection{Vues}
@@ -241,9 +253,37 @@ représentée par un objet ou tableau PHP et possède des getters) (voir listing
 \end{code}
 
 \section{Front-end}
-\subsection{CSS avec Bootstrap}
-\subsection{jQuery et Flot JS}
+Le Front-end de ce site est beaucoup plus simple que le Back-end, grâce à Boostrap et à jQuery. De même, il 
+n'y a pas d'animations complexes à gérer.
 
+\subsection{CSS avec Bootstrap}
+Le design CSS de ce site a été réalisé avec Bootstrap, un framework CSS développé initialement pour les 
+besoins internes de Twitter. Il repose sur un système de grille à douze colonnes qui permet un positionnement 
+fin du contenu. Il offre également un design responsive, des icônes et des plugins jQuery tous faits entre autres.
+
+\subsection{jQuery et Flot JS}
+jQuery est une librairie Javascript qui offre des raccourcis et des techniques de manipulation du DOM puissantes 
+et pratiques. J'ai utilisé un peu de jQuery pour générer un input pour chaque utilisateur ajouté à un événement et 
+pour définir son poids dans le groupe (voir listing \ref{javascript_users}) :
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=41,lastline=65]{javascript}{../views/new_event.html.twig}
+	\caption{Code jQuery pour ajouter les utilisateurs - \mintinline{php}{views/new_event.html.twig}}
+	\label{javascript_users}
+\end{code}
+\newpage
+
+Pour dessiner le graphique sur la page d'un événement, j'ai utilisé Flot JS, un plugin jQuery qui s'utilise très 
+simplement. Je récupère les données calculées dans le contrôleur grâce à Twig et je les insère là où Flot en a 
+besoin. Pour que Flot fonctionne, il faut inclure le fichier \mintinline{text}{jquery.flot.min.js} dans la page 
+souhaitée et déclarer un \mintinline{html}{<div id="placeholder" style="width:800px;height:300px"></div>} là où 
+on veut dessiner le graphique (voir listing \ref{javascript_flot}) :
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=113,lastline=141]{javascript}{../views/event.html.twig}
+	\caption{Code jQuery et Flot pour le graphique - \mintinline{php}{views/event.html.twig}}
+	\label{javascript_flot}
+\end{code}
+
+\newpage
 
 \section{Conclusion}
 \subsection{État actuel du projet}
@@ -254,7 +294,7 @@ Toutes les fonctionnalités demandées sont implémentées, pas de bugs connus.
 	\item Tests unitaires
 	\item Dans une situation réelle de production, on ne laisserait pas un utilisateur choisir parmi tous les 
 	autres utilisateurs au moment de créer un nouvel événement. Il faudrait plutôt ajouter des adresses email, 
-	d'utilisateurs déjà inscrits (ou non) sur le site, ainsi chaque invité peut rejoindre l'événement.
+	d'utilisateurs déjà inscrits (ou non) sur le site, ainsi chaque invité peut rejoindre l'événement sur invitation.
 \end{itemize}
 
 

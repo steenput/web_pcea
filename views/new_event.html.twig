@@ -25,7 +25,9 @@
 
 	<div class="form-group">
 		<div class="col-sm-offset-5 col-sm-3">
-			<input type="submit" class="btn btn-primary" value="Save" />
+			<button type="submit" class="btn btn-primary">
+				<i class="glyphicon glyphicon-ok"></i> Save
+			</button>
 		</div>
 	</div>
 {{ form_end(eventForm) }}
@@ -37,16 +39,28 @@
 
 <script type="text/javascript">
 $(function() {
-	let select_user = $("option:contains({{ app.user.username }})").attr('selected', 'selected');
-	$("#div_weight").append('<label class="col-sm-5 control-label required" for="form_weight">' + select_user.text() + '\'s weight</label>');
-	$("#div_weight").append('<div class="col-sm-4"><input id="form_weight" type="number" name="weight[' + select_user.val() + ']" value="1" min="1" />');
+	let select_user = $("option:contains({{ app.user.username }})")
+	.attr('selected', 'selected');
+
+	$("#div_weight")
+	.append('<label class="col-sm-5 control-label required" for="form_weight">' 
+	+ select_user.text() + '\'s weight</label>');
+
+	$("#div_weight")
+	.append('<div class="col-sm-4"><input id="form_weight" type="number" name="weight[' 
+	+ select_user.val() + ']" value="1" min="1" />');
 });
 
 $("#form_users").change(function() {
 	$("#div_weight").empty();
 	$("#form_users option:selected").each(function() {
-		$("#div_weight").append('<label class="col-sm-5 control-label required" for="form_weight">' + $(this).text() + '\'s weight</label>');
-		$("#div_weight").append('<div class="col-sm-4"><input id="form_weight" type="number" name="weight[' + $(this).val() + ']" value="1" min="1" />');
+		$("#div_weight")
+		.append('<label class="col-sm-5 control-label required" for="form_weight">' 
+		+ $(this).text() + '\'s weight</label>');
+
+		$("#div_weight")
+		.append('<div class="col-sm-4"><input id="form_weight" type="number" name="weight['
+		+ $(this).val() + ']" value="1" min="1" />');
 	});
 }).trigger("change");
 </script>
