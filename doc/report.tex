@@ -20,7 +20,8 @@
 	urlcolor=blue
 }
 
-\usepackage{mdframed}
+\usepackage{caption}
+\newenvironment{code}{\captionsetup{type=listing}}{}
 
 \begin{document}
 
@@ -37,8 +38,10 @@
 \end{figure}
 \newpage
 
-\tableofcontents 
+\tableofcontents
 \listoffigures
+\renewcommand\listoflistingscaption{Table des listings de code source}
+\listoflistings
 
 \newpage
 
@@ -75,10 +78,12 @@ personnes du groupe d’amis.
 
 
 \section{Base de données}
-Les technologies imposées pour la base de données de ce travail pratique sont SQLite ou MySQL. J'ai choisi d'utiliser 
-MySQL, car je suis familier avec. J'ai profité de cette occasion pour découvrir et utiliser Workbench, un programme 
-permettant de modéliser les tables et relations d'une base de données de manière graphique. Une fois le model terminé, 
-Workbench offre la possibilité de l'exporter en instructions SQL (création de tables et contraintes).
+Les technologies imposées pour la base de données de ce travail pratique sont SQLite ou MySQL. J'ai choisi 
+d'utiliser MySQL, car je suis familier avec. J'ai profité de cette occasion pour découvrir et utiliser Workbench, 
+un programme permettant de modéliser les tables et relations d'une base de données de manière graphique. Une fois 
+le model terminé, Workbench offre la possibilité de l'exporter en instructions SQL (création de tables et 
+contraintes). Pour créer la base de données et les tables il suffit d'exécuter \mintinline{text}{db/schema.sql} 
+dans MySQL. Il est également nécessaire d'adapter la configuration dans \mintinline{text}{app/config/prod.php}.
 \bigbreak
 
 Mon schéma est constitué des tables suivantes :
@@ -112,16 +117,11 @@ On peut configurer Silex pour que le code source, défini dans le répertoire \m
 au mécanisme de chargement automatique (autoloading) géré par Composer. Pour que cela fonctionne, il faut que le code 
 source respecte le standard \href{http://www.php-fig.org/psr/psr-4/}{PSR-4}.
 Voici l'arborescence du site :
-\begin{mdframed}[linecolor=black, topline=true, bottomline=true, leftline=true, rightline=true]
-	\inputminted[breaklines,breaksymbol=,linenos,stepnumber=5,tabsize=2]{php}{tree.txt}
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2]{text}{tree.txt}
+	\caption{Arborescence du site}
 	\label{tree}
-\end{mdframed}
-% \begin{figure}
-% 	\begin{center}
-% 		\includegraphics[width=0.5\textwidth]{tree.png}
-% 	\end{center}
-% 	\caption{Arborescence du site}
-% \end{figure}
+\end{code}
 
 \begin{itemize}
 	\item app : fichiers de config et routes
@@ -168,36 +168,77 @@ Ce contrôleur gère les actions de la page principale. Si un utilisateur est co
 composant de sécurité intégré, j'ai facilement pu mettre en place le login utilisateur. Il m'a suffit de 
 configurer quelques réglages dans \mintinline{php}{app/app.php} : la route du formulaire de login et celle de la 
 vérification du login (automatiquement faite), si les clients anonymes peuvent accéder à la page principale, 
-la provenance des données utilisateurs, etc. : 
-% (voir listing \ref{config_login}). 
-% \begin{listing}[ht]
-\begin{mdframed}[linecolor=black, topline=true, bottomline=true, leftline=true, rightline=true]
-	\inputminted[breaklines,breaksymbol=,linenos,stepnumber=5,tabsize=2,firstline=26,lastline=39]{php}{../app/app.php}
+la provenance des données utilisateurs, etc. (voir listing \ref{config_login}) :
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=26,lastline=39]{php}{../app/app.php}
+	\caption{Configuration du login utilisateur - \mintinline{php}{app/app.php}}
 	\label{config_login}
-\end{mdframed}
-	% \caption{Configuration du login utilisateur - \mintinline{php}{app/app.php}}
-% \end{listing}
+\end{code}
+\bigbreak
 
 Si l'utilisateur s'inscrit, 
 son formulaire est construit grâce au composant Silex, et lorsqu'il est reçu valide et conforme en retour, son 
-mot de passe est hashé et le nouvel utilisateur est inscrit en base de données :
-% (voir listing \ref{controller_register}).
-
-% \begin{listing}[ht]
-\begin{mdframed}[linecolor=black, topline=true, bottomline=true, leftline=true, rightline=true]
-	\inputminted[breaklines,breaksymbol=,linenos,stepnumber=5,tabsize=2,firstline=22,lastline=56]{php}{../src/Controller/IndexController.php}
+mot de passe est hashé et le nouvel utilisateur est inscrit en base de données (voir listing 
+\ref{controller_register}) :
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=22,lastline=56]{php}{../src/Controller/IndexController.php}
+	\caption{Inscription d'un utilisateur - \mintinline{php}{src/Controller/IndexController.php}}
 	\label{controller_register}
-\end{mdframed}
-	% \caption{Inscription d'un utilisateur - \mintinline{php}{src/Controller/IndexController.php}}
-% \end{listing}
+\end{code}
 
 \subsubsection{\mintinline{php}{EventController.php}}
-Ce contrôleur gère les actions des pages des événements et des dépenses. 
+Ce contrôleur gère les actions des pages des événements et des dépenses. Les actions de créer et supprimer 
+dépenses et événements sont semblables, le formulaire est créé, envoyé au client, au retour il est vérifié 
+et si tout est en ordre on enregistre la nouvelle entrée en base de données. L'action d'afficher l'événement 
+avec ses dépenses et l'équilibre est un peu plus longue. Je commence par effectuer un tableau des parts que 
+chaque membre puis je calcule la situation pour chacun (positive ou négative) et finalement, en parcourant 
+plusieurs fois le tableau des situations je une manière de créer l'équilibre (savoir qui doit combien à qui) 
+(voir listing \ref{controller_equilibrium}) :
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=57,lastline=111]{php}{../src/Controller/EventController.php}
+	\caption{Calcul de l'équilibre - \mintinline{php}{src/Controller/EventController.php}}
+	\label{controller_equilibrium}
+\end{code}
 
 \subsection{Modèles, accès aux données}
 \label{data_model_access}
+L'accès aux données avec Silex/Symfony se fait généralement avec l'ORM 
+\href{http://docs.doctrine-project.org/en/latest/}{Doctrine} (l'utilisation de base est semblable à PDO PHP). 
+Tout ce qui touche cet accès se trouve dans les classes \mintinline{php}{src/DAO/xxxDAO.php}, avec pour chaque 
+fichier les requêtes traitant avec la table du même nom. La classe \mintinline{php}{src/DAO/UserDAO.php} a une 
+contrainte supplémentaire, elle implémente l'interface \mintinline{php}{UserProviderInterface} nécessaire au 
+fonctionnement du module de sécurité/login des utilisateurs. Pour les besoins de la construction des formulaires, 
+des vues et pour un code plus modulaire, chaque table est représentée par un 
+"\href{https://en.wikipedia.org/wiki/Plain_old_Java_object}{POPO}", un simple objet PHP avec attributs et 
+accesseurs. Voici par exemple l'insertion d'un nouvel événement en base de données (voir listing 
+\ref{insert_event}) :
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=36,lastline=58]{php}{../src/DAO/EventDAO.php}
+	\caption{Insert d'un événement - \mintinline{php}{src/DAO/EventDAO.php}}
+	\label{insert_event}
+\end{code}
 
 \subsection{Vues}
+La création d'une vue avec Twig se fait vraiment simplement. Twig est un moteur de templates PHP, il a sa propre 
+syntaxe épurée destinée à des structures de contrôles simples pensées pour l'affichage. Il permet de faire de 
+l'inclusion intelligente de templates : le fichier de vue parent est \mintinline{php}{views/layout.html.twig}, 
+il définit plusieurs blocs que les templates enfants pourront "étendre", un peu à la manière de l'héritage en 
+POO, ce qui facilite la réutilisation de code. De concert avec le composant de construction de formulaires, il 
+offre une manière simple et efficace pour générer ses formulaire. Côté contrôleur, on envoie les variables et 
+tableaux au moment du rendu de la vue (voir listing \ref{controller_render}). Côté vue Twig, on y accède 
+simplement grâce à la syntaxe \mintinline{php}{variable.attribut} (il faut au préalable que la variable soit 
+représentée par un objet ou tableau PHP et possède des getters) (voir listing \ref{new_spent_twig}).
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2,firstline=230,lastline=234]{php}{../src/Controller/EventController.php}
+	\caption{Rendu d'une vue Twig - \mintinline{php}{src/Controller/EventController.php}}
+	\label{controller_render}
+\end{code}
+
+\begin{code}
+	\inputminted[breaklines,breaksymbol=,linenos,frame=single,stepnumber=5,tabsize=2]{twig}{../views/new_spent.html.twig}
+	\caption{Vue d'une nouvelle dépense - \mintinline{php}{views/new_spent.html.twig}}
+	\label{new_spent_twig}
+\end{code}
 
 \section{Front-end}
 \subsection{CSS avec Bootstrap}
@@ -211,11 +252,9 @@ Toutes les fonctionnalités demandées sont implémentées, pas de bugs connus.
 \subsection{Propositions d'améliorations}
 \begin{itemize}
 	\item Tests unitaires
-	\item Dans une situation réelle de production, on ne laisserait pas un utilisateur choisir parmi tous les autres 
-			utilisateurs au moment de créer un nouvel événement. Il faudrait plutôt ajouter des adresses email, 
-			d'utilisateurs déjà inscrits (ou non) sur le site, ainsi chaque invité peut rejoindre l'événement.
-	\item Changer le code lié à la sélection du poids de l'utilisateur (lors d'un nouvel évenement) pour l'intégrer 
-			avec le composant Form de Symfony.
+	\item Dans une situation réelle de production, on ne laisserait pas un utilisateur choisir parmi tous les 
+	autres utilisateurs au moment de créer un nouvel événement. Il faudrait plutôt ajouter des adresses email, 
+	d'utilisateurs déjà inscrits (ou non) sur le site, ainsi chaque invité peut rejoindre l'événement.
 \end{itemize}
 
 
